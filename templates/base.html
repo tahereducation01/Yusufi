@@ -134,8 +134,7 @@
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7h12.8M7 13L5.4 5M17 21a1 1 0 100-2 1 1 0 000 2zm-10 0a1 1 0 100-2 1 1 0 000 2z" />
           </svg>
-          <span
-            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm">0</span>
+          <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm">{{ cart_count() }}</span>
         </a>
       </div>
 
@@ -331,7 +330,7 @@
       <div>
         <h3 class="text-white font-bold text-base mb-4">Get in Touch</h3>
         <ul class="space-y-2 text-sm text-gray-400">
-          <li class="flex items-center gap-2">📞 +917767952949</li>
+          <li class="flex items-center gap-2">📞 +91 7767952949</li>
           <li class="flex items-center gap-2">✉️ yusufkanore@gmail.com</li>
           <li class="flex items-center gap-2">🕒 Mon–Fri 08:00–17:00 EST</li>
         </ul>
