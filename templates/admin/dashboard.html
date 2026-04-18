@@ -1,0 +1,86 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Dashboard — SafetyPro Supply{% endblock %}
+{% block admin_content %}
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-navy-dark">Admin Dashboard</h1>
+      <p class="text-sm text-gray-500 mt-2">Manage inventory, orders, brands, categories, and bids from one place.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/admin/products" class="text-sm bg-brand text-white px-4 py-2 rounded-xl hover:bg-brand-dark">Products</a>
+      <a href="/admin/orders" class="text-sm bg-navy-dark text-white px-4 py-2 rounded-xl hover:bg-navy">Orders</a>
+      <a href="/admin/bids" class="text-sm bg-gray-800 text-white px-4 py-2 rounded-xl hover:bg-gray-700">Bids</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+      <p class="text-sm uppercase tracking-widest text-gray-500">Products</p>
+      <p class="mt-3 text-4xl font-extrabold text-navy-dark">{{ stats['products'] }}</p>
+    </div>
+    <div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+      <p class="text-sm uppercase tracking-widest text-gray-500">Orders</p>
+      <p class="mt-3 text-4xl font-extrabold text-navy-dark">{{ stats['orders'] }}</p>
+    </div>
+    <div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+      <p class="text-sm uppercase tracking-widest text-gray-500">Bid Requests</p>
+      <p class="mt-3 text-4xl font-extrabold text-navy-dark">{{ stats['bids'] }}</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-navy-dark">Recent Orders</h2>
+          <p class="text-sm text-gray-500">Latest confirmed orders.</p>
+        </div>
+        <a href="/admin/orders" class="text-sm text-brand hover:underline">View all</a>
+      </div>
+      {% if recent_orders %}
+      <div class="space-y-3">
+        {% for order in recent_orders %}
+        <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+          <div class="flex items-center justify-between gap-3 text-sm text-gray-600">
+            <span>Order #{{ order['id'] }}</span>
+            <span>{{ order['created_at'][:10] }}</span>
+          </div>
+          <p class="font-semibold text-navy-dark mt-2">{{ order['customer_name'] or 'Guest' }}</p>
+          <p class="text-xs text-gray-500 mt-1">₹{{ "%.2f"|format(order['total_amount']) }} • {{ order['status'] }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-gray-500">No recent orders yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-navy-dark">Recent Bids</h2>
+          <p class="text-sm text-gray-500">New bid requests waiting for review.</p>
+        </div>
+        <a href="/admin/bids" class="text-sm text-brand hover:underline">View all</a>
+      </div>
+      {% if recent_bids %}
+      <div class="space-y-3">
+        {% for bid in recent_bids %}
+        <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+          <div class="flex items-center justify-between gap-3 text-sm text-gray-600">
+            <span>{{ bid['product_name'] or 'Unknown product' }}</span>
+            <span>{{ bid['created_at'][:10] }}</span>
+          </div>
+          <p class="font-semibold text-navy-dark mt-2">{{ bid['name'] }}</p>
+          <p class="text-xs text-gray-500 mt-1">{{ bid['status'] }} • {{ bid['email'] }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-gray-500">No bid requests yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

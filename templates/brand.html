@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ brand_name }} — Premium Hardware & Safety Equipment{% endblock %}
+
+{% block content %}
+<!-- Enhanced Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
+  <a href="/" class="hover:text-brand transition flex items-center gap-1">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    Home
+  </a>
+  <span class="text-gray-400">/</span>
+  <a href="/brands" class="hover:text-brand transition">Brands</a>
+  <span class="text-gray-400">/</span>
+  <span class="text-navy-dark font-semibold">{{ brand_name }}</span>
+</nav>
+
+<!-- Brand Header -->
+<div class="mb-8 pb-4 border-b border-gray-200">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-navy-dark inline-block bg-gradient-to-r from-navy-dark to-brand bg-clip-text text-transparent">{{ brand_name }}</h1>
+  <p class="mt-2 text-gray-500 text-sm">Explore premium quality products from <strong class="text-brand">{{ brand_name }}</strong> — trusted for industrial safety and hardware excellence.</p>
+</div>
+
+{% if products %}
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+  {% for p in products %}
+  <div class="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden hover:border-brand/30">
+    <!-- Product Image with Zoom Effect -->
+    <a href="/product/{{ p['id'] }}" class="block overflow-hidden h-48 bg-gray-100 relative">
+      <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}"
+           class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+           onerror="this.src='https://placehold.co/600x400/1e3a5f/f59e0b?text=Yusufi+Hardware'" />
+      <!-- Quick View Badge (Optional) -->
+      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+        <span class="bg-white text-navy-dark px-3 py-1 rounded-full text-xs font-bold shadow-lg">Quick View</span>
+      </div>
+    </a>
+    
+    <div class="p-4 flex flex-col flex-1">
+      <span class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide mb-1">{{ p['category'] }}</span>
+      <a href="/product/{{ p['id'] }}" class="text-navy-dark font-bold text-sm md:text-base hover:text-brand transition line-clamp-2 min-h-[2.5rem]">
+        {{ p['name'] }}
+      </a>
+      
+      <!-- Rating Placeholder (Optional) -->
+      <div class="flex items-center gap-1 mt-2">
+        <div class="flex text-yellow-400 text-xs">★★★★☆</div>
+        <span class="text-[10px] text-gray-400">(24)</span>
+      </div>
+      
+      <div class="mt-auto pt-3 flex items-center justify-between gap-2">
+        <div>
+          <span class="text-brand-dark font-extrabold text-lg">₹{{ "%.2f"|format(p['price']) }}</span>
+          {% if p['old_price'] %}
+          <span class="text-gray-400 text-xs line-through ml-1">₹{{ "%.2f"|format(p['old_price']) }}</span>
+          {% endif %}
+        </div>
+        <form action="/cart/add/{{ p['id'] }}" method="post">
+          <input type="hidden" name="quantity" value="1" />
+          <button type="submit" class="bg-navy-dark hover:bg-brand hover:text-navy-dark text-white font-bold px-3 py-1.5 rounded-lg transition-all duration-200 text-xs shadow-sm hover:shadow-md flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Pagination Placeholder (if needed) -->
+<div class="mt-10 flex justify-center">
+  <nav class="flex items-center gap-2">
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50">Previous</a>
+    <a href="#" class="px-3 py-2 rounded-lg bg-brand text-white text-sm">1</a>
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50">2</a>
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50">3</a>
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50">Next</a>
+  </nav>
+</div>
+
+{% else %}
+<!-- Empty State with Better Design -->
+<div class="text-center py-16 md:py-24 bg-gray-50 rounded-2xl">
+  <div class="text-6xl mb-4">🔍</div>
+  <p class="text-xl font-semibold text-gray-700">No products found for this brand.</p>
+  <p class="text-gray-500 mt-2">We're constantly updating our inventory. Check back soon!</p>
+  <a href="/" class="mt-6 inline-flex items-center gap-2 bg-brand text-white px-6 py-2.5 rounded-xl hover:bg-brand-dark transition shadow-md">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    Back to Home
+  </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}All Brands — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<div class="mb-10 text-center md:text-left">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-navy-dark inline-block border-b-4 border-brand pb-2">Trusted Brands</h1>
+  <p class="mt-4 text-base text-gray-600 max-w-2xl">Browse premium hardware and safety equipment brands trusted by industry professionals worldwide.</p>
+</div>
+
+{% if brands %}
+<div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for row in brands %}
+  <a href="/brand/{{ row['brand'] | urlencode }}" 
+     class="group block rounded-2xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-brand/30 hover:-translate-y-1">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand/20 transition">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-navy-dark group-hover:text-brand transition line-clamp-1">{{ row['brand'] }}</h2>
+        <p class="text-sm text-gray-500 mt-2 flex items-center gap-1">
+          Explore products 
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </p>
+      </div>
+      <div class="text-right">
+        <span class="text-xs text-brand font-semibold bg-brand/10 px-2 py-1 rounded-full">Premium</span>
+      </div>
+    </div>
+   </a>
+  {% endfor %}
+</div>
+
+<!-- Featured Brand Section -->
+<div class="mt-16 bg-gradient-to-r from-navy-dark to-navy rounded-2xl p-8 text-white">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+    <div>
+      <h3 class="text-2xl font-bold mb-2">Looking for a specific brand?</h3>
+      <p class="text-gray-300">Can't find what you're looking for? Contact our team for special orders.</p>
+    </div>
+    <a href="/contact" class="bg-white text-navy-dark px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition shadow-lg whitespace-nowrap">
+      Request a Brand →
+    </a>
+  </div>
+</div>
+
+{% else %}
+<div class="text-center py-20 bg-gray-50 rounded-2xl">
+  <div class="text-6xl mb-4">🏷️</div>
+  <p class="text-xl font-semibold text-gray-600">No brands available at the moment.</p>
+  <p class="text-gray-500 mt-2">We're adding new brands regularly. Check back soon!</p>
+  <a href="/" class="mt-6 inline-block bg-brand text-white px-6 py-3 rounded-xl hover:bg-brand-dark transition shadow-md">
+    Browse Products
+  </a>
+</div>
+{% endif %}
+{% endblock %}

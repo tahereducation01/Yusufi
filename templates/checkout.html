@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Checkout — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+  <h1 class="text-2xl md:text-3xl font-extrabold text-navy-dark mb-6 flex items-center gap-3">
+    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    Checkout
+  </h1>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Checkout Form -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <h2 class="font-extrabold text-navy-dark text-xl mb-5 flex items-center gap-2">
+          <span class="w-7 h-7 bg-brand text-white rounded-full flex items-center justify-center text-sm">1</span>
+          Delivery Details
+        </h2>
+        
+        <form action="/checkout" method="post" class="space-y-5" id="checkoutForm">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2" for="full_name">Full Name *</label>
+            <input type="text" id="full_name" name="full_name" required
+                     class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition" />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2" for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" required
+                   placeholder="+1 (555) 000-0000"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2" for="address">Delivery Address *</label>
+            <textarea id="address" name="address" rows="3" required
+                      placeholder="Street address, city, state, postal code"
+                      class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent resize-none"></textarea>
+          </div>
+
+          <!-- Payment Info -->
+          <div class="bg-brand-light rounded-xl p-5 mt-4">
+            <div class="flex items-center gap-3 mb-3">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+              <h3 class="font-bold text-navy-dark">Payment Information</h3>
+            </div>
+            <p class="text-sm text-gray-600">Payment is processed via invoice. Our accounts team will send a pro-forma invoice within 1 business day with payment instructions.</p>
+            <div class="mt-3 flex gap-4 text-xs text-gray-500">
+              <span>✓ Secure Checkout</span>
+              <span>✓ 30-Day Terms Available</span>
+              <span>✓ GST Invoice Provided</span>
+            </div>
+          </div>
+
+          <button type="submit"
+                  class="w-full bg-brand hover:bg-brand-dark text-white font-extrabold py-3.5 rounded-xl text-base transition-all duration-200 mt-4 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Place Order →
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-24">
+        <h2 class="font-extrabold text-navy-dark text-lg mb-4 flex items-center gap-2">
+          <span class="w-7 h-7 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm">2</span>
+          Order Summary
+        </h2>
+        
+        <div class="max-h-64 overflow-y-auto space-y-3 mb-4">
+          {% for item in items %}
+          <div class="flex gap-3 py-2 border-b border-gray-100">
+            <img src="{{ item['image_url'] }}" alt="{{ item['name'] }}" 
+                 class="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                 onerror="this.src='https://placehold.co/100x100/1e3a5f/f59e0b?text=Product'" />
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-navy-dark line-clamp-1">{{ item['name'] }}</p>
+              <div class="flex justify-between text-sm mt-1">
+                <span class="text-gray-500">Qty: {{ item['qty'] }}</span>
+                <span class="font-bold text-brand-dark">₹{{ "%.2f"|format(item['subtotal']) }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="space-y-2 pt-3 border-t border-gray-200">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="font-semibold">₹{{ "%.2f"|format(total) }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Shipping</span>
+            <span class="{% if total >= 250 %}text-green-600 font-semibold{% else %}text-gray-500{% endif %}">
+              {% if total >= 250 %}FREE{% else %}Calculated{% endif %}
+            </span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">GST (18%)</span>
+            <span class="text-gray-600">Included</span>
+          </div>
+        </div>
+        
+        <div class="border-t border-gray-200 mt-3 pt-3">
+          <div class="flex justify-between font-extrabold text-navy-dark text-lg">
+            <span>Total</span>
+            <span>₹{{ "%.2f"|format(total) }}</span>
+          </div>
+        </div>
+        
+        {% if total >= 250 %}
+        <div class="mt-3 bg-green-50 rounded-lg p-3">
+          <p class="text-green-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Free Shipping Applied!
+          </p>
+        </div>
+        {% else %}
+        <div class="mt-3 bg-amber-50 rounded-lg p-3">
+          <p class="text-amber-800 text-sm">Add ₹{{ "%.2f"|format(250 - total) }} more for free shipping</p>
+          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+            <div class="bg-brand rounded-full h-1.5" style="width: {{ (total / 250 * 100) if total < 250 else 100 }}%"></div>
+          </div>
+        </div>
+        {% endif %}
+        
+        <div class="mt-4 pt-3 border-t border-gray-200">
+          <p class="text-xs text-gray-500 text-center">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            Your information is secure
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Form validation before submit
+document.getElementById('checkoutForm')?.addEventListener('submit', function(e) {
+  const required = ['full_name', 'phone', 'address'];
+  let missing = [];
+  
+  for (let field of required) {
+    const input = this.querySelector(`[name="${field}"]`);
+    if (!input?.value.trim()) {
+      missing.push(field.replace('_', ' '));
+    }
+  }
+  
+  if (missing.length > 0) {
+    e.preventDefault();
+    alert(`Please fill in: ${missing.join(', ')}`);
+  }
+});
+</script>
+{% endblock %}

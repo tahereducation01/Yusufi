@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+{% block title %}Bid Requests — SafetyPro Supply{% endblock %}
+{% block admin_content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-extrabold text-navy-dark">Bid Requests</h1>
+    <p class="text-sm text-gray-500">Review, update status, and respond to customer bid inquiries.</p>
+  </div>
+  <a href="/admin" class="text-sm text-brand hover:underline">Back to dashboard</a>
+</div>
+
+{% if bids %}
+<div class="space-y-4">
+  {% for bid in bids %}
+  <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-bold text-navy-dark">{{ bid['product_name'] or 'Unknown product' }}</h2>
+        <p class="text-sm text-gray-500">{{ bid['name'] }} • {{ bid['user_email'] or bid['email'] }}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-sm text-gray-500">Submitted {{ bid['created_at'][:10] }}</p>
+        <span class="mt-1 inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{{ bid['status'] }}</span>
+      </div>
+    </div>
+    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+      <div>
+        <p class="font-semibold">Offered Price</p>
+        <p>₹{{ "%.2f"|format(bid['offered_price'] or 0) if bid['offered_price'] else 'Not specified' }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Contact</p>
+        <p>{{ bid['email'] }}</p>
+      </div>
+    </div>
+    {% if bid['note'] %}
+    <div class="mt-4 text-sm text-gray-600">
+      <p class="font-semibold">Customer note</p>
+      <p>{{ bid['note'] }}</p>
+    </div>
+    {% endif %}
+    <form action="/admin/bids/{{ bid['id'] }}/status" method="post" class="mt-4 flex flex-wrap items-center gap-3">
+      <label class="flex-1 min-w-[180px]">
+        <span class="block text-sm text-gray-600 mb-1">Update status</span>
+        <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:ring-brand">
+          {% for option in ['Pending','Reviewed','Accepted','Declined'] %}
+          <option value="{{ option }}" {% if bid['status'] == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="bg-brand-dark text-white px-5 py-2 rounded-xl font-semibold hover:bg-brand transition">Save</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-10 text-center text-gray-500">
+  <p class="text-lg font-semibold">No bid requests yet.</p>
+</div>
+{% endif %}
+{% endblock %}

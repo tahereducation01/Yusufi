@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ action }} Category — SafetyPro Supply{% endblock %}
+{% block admin_content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-navy-dark">{{ action }} Category</h1>
+      <p class="text-sm text-gray-500">Create or update a category used for catalog navigation.</p>
+    </div>
+    <a href="/admin/categories" class="text-sm text-brand hover:underline">Back to categories</a>
+  </div>
+  <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
+    <form action="" method="post" class="space-y-5">
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">Category Name</span>
+        <input name="name" required value="{{ category['name'] if category else '' }}" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand focus:ring-brand" />
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">Description</span>
+        <textarea name="description" rows="5" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand focus:ring-brand">{{ category['description'] if category else '' }}</textarea>
+      </label>
+      <button type="submit" class="w-full bg-brand text-white py-3 rounded-xl font-semibold hover:bg-brand-dark transition">{{ action }} Category</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

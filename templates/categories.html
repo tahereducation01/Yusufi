@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Product Categories — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<div class="mb-10 text-center md:text-left">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-navy-dark inline-block border-b-4 border-brand pb-2">Product Categories</h1>
+  <p class="mt-4 text-base text-gray-600 max-w-2xl">Shop by category to find the right safety equipment and hardware for your needs.</p>
+</div>
+
+{% if categories %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {% for row in categories %}
+  <a href="/category/{{ row['category'] | urlencode }}" 
+     class="group block rounded-2xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:border-brand/30 hover:-translate-y-1">
+    <div class="text-center">
+      <!-- Category Icon based on name -->
+      <div class="w-16 h-16 mx-auto bg-gradient-to-br from-brand/10 to-brand/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">
+        <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold text-navy-dark group-hover:text-brand transition line-clamp-1">{{ row['category'] }}</h2>
+      <p class="text-sm text-gray-500 mt-2 flex items-center justify-center gap-1">
+        Browse Products
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </p>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+<!-- Popular Categories Banner -->
+<div class="mt-16 bg-gray-900 rounded-2xl p-8 text-center text-white">
+  <h3 class="text-2xl font-bold mb-3">Need help finding the right category?</h3>
+  <p class="text-gray-300 mb-6">Our experts can help you select the perfect safety equipment for your industry.</p>
+  <div class="flex flex-col sm:flex-row gap-4 justify-center">
+    <a href="/contact" class="bg-brand px-6 py-3 rounded-xl font-bold hover:bg-brand-dark transition shadow-lg">
+      Contact Support
+    </a>
+    <a href="/" class="bg-white/10 px-6 py-3 rounded-xl font-bold hover:bg-white/20 transition">
+      View All Products
+    </a>
+  </div>
+</div>
+
+{% else %}
+<div class="text-center py-20 bg-gray-50 rounded-2xl">
+  <div class="text-6xl mb-4">📂</div>
+  <p class="text-xl font-semibold text-gray-600">No categories available</p>
+  <p class="text-gray-500 mt-2">We're organizing our product catalog. Please check back soon!</p>
+  <a href="/" class="mt-6 inline-block bg-brand text-white px-6 py-3 rounded-xl hover:bg-brand-dark transition shadow-md">
+    Browse All Products
+  </a>
+</div>
+{% endif %}
+{% endblock %}

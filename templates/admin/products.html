@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block title %}Manage Products — SafetyPro Supply{% endblock %}
+{% block admin_content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-extrabold text-navy-dark">Products</h1>
+    <p class="text-sm text-gray-500">Add new products or update existing listings.</p>
+  </div>
+  <a href="/admin/products/new" class="bg-brand text-white px-4 py-3 rounded-xl font-semibold hover:bg-brand-dark">New Product</a>
+</div>
+
+<div class="overflow-x-auto bg-white rounded-3xl border border-gray-200 shadow-sm">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Product</th>
+        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Category</th>
+        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Brand</th>
+        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Price</th>
+        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Stock</th>
+        <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-100">
+      {% for product in products %}
+      <tr>
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200">
+              {% if product['image_url'] %}
+              <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}" class="w-full h-full object-cover" />
+              {% else %}
+              <span class="text-xs text-gray-400">No image</span>
+              {% endif %}
+            </div>
+            <span class="text-sm font-semibold text-navy-dark">{{ product['name'] }}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-500">{{ product['category'] }}</td>
+        <td class="px-6 py-4 text-sm text-gray-500">{{ product['brand'] or '—' }}</td>
+        <td class="px-6 py-4 text-sm text-gray-800">₹{{ "%.2f"|format(product['price']) }}</td>
+        <td class="px-6 py-4 text-sm text-gray-800">{{ product['stock_quantity'] }}</td>
+        <td class="px-6 py-4 text-right space-x-2">
+          <a href="/admin/products/{{ product['id'] }}/edit" class="text-brand hover:underline">Edit</a>
+          <form action="/admin/products/{{ product['id'] }}/delete" method="post" class="inline">
+            <button type="submit" class="text-red-600 hover:underline">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if products|length == 0 %}
+      <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No products available yet.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

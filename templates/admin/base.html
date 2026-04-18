@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid grid-cols-1 xl:grid-cols-[260px_minmax(0,1fr)] gap-6">
+  <aside class="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+    <div class="mb-8">
+      <p class="text-xs uppercase tracking-widest text-gray-500">Admin Panel</p>
+      <h2 class="text-2xl font-extrabold text-navy-dark mt-2">Control Center</h2>
+    </div>
+    <nav class="space-y-2 text-sm text-gray-700">
+      <a href="/admin" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Dashboard</a>
+      <a href="/admin/products" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Products</a>
+      <a href="/admin/brands" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Brands</a>
+      <a href="/admin/categories" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Categories</a>
+      <a href="/admin/orders" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Orders</a>
+      <a href="/admin/bids" class="block rounded-2xl px-4 py-3 hover:bg-brand-light hover:text-brand-dark transition">Bids</a>
+      <a href="/admin/logout" class="block rounded-2xl px-4 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Logout</a>
+    </nav>
+  </aside>
+  <main class="space-y-6">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

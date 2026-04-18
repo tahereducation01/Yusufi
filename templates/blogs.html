@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Safety Insights & Hardware Blogs — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<div class="mb-10 text-center md:text-left">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-navy-dark inline-block border-b-4 border-brand pb-2">Safety Insights</h1>
+  <p class="mt-4 text-base text-gray-600 max-w-2xl">Expert advice, product guides, and industry best practices for industrial safety and hardware professionals.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Blog Card 1 -->
+  <article class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-100">
+    <div class="h-52 overflow-hidden bg-gray-200">
+      <img src="https://placehold.co/600x400/1e3a5f/ffffff?text=PPE+Guide" alt="Protective Gear" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+    </div>
+    <div class="p-6 flex flex-col flex-1">
+      <div class="flex items-center gap-2 text-xs text-brand font-semibold uppercase tracking-wide mb-3">
+        <span>📅 May 15, 2025</span>
+        <span>•</span>
+        <span>5 min read</span>
+      </div>
+      <h2 class="text-xl font-bold text-navy-dark group-hover:text-brand transition line-clamp-2">How to Choose the Right Protective Gear</h2>
+      <p class="mt-3 text-gray-600 text-sm leading-relaxed line-clamp-3">Learn how to select certified helmets, goggles, gloves, and footwear for maximum worksite safety and compliance with OSHA standards.</p>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <a href="#" class="inline-flex items-center gap-2 text-brand font-semibold hover:gap-3 transition-all">Read full article 
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Blog Card 2 -->
+  <article class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-100">
+    <div class="h-52 overflow-hidden bg-gray-200">
+      <img src="https://placehold.co/600x400/0f172a/f59e0b?text=Warehouse+Safety" alt="Warehouse Safety" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+    </div>
+    <div class="p-6 flex flex-col flex-1">
+      <div class="flex items-center gap-2 text-xs text-brand font-semibold uppercase tracking-wide mb-3">
+        <span>📅 June 02, 2025</span>
+        <span>•</span>
+        <span>7 min read</span>
+      </div>
+      <h2 class="text-xl font-bold text-navy-dark group-hover:text-brand transition line-clamp-2">Warehouse Safety Checklist for 2026</h2>
+      <p class="mt-3 text-gray-600 text-sm leading-relaxed line-clamp-3">Stay compliant and reduce workplace risks with this comprehensive checklist for equipment inspection, signage, and emergency protocols.</p>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <a href="#" class="inline-flex items-center gap-2 text-brand font-semibold hover:gap-3 transition-all">Read full article 
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Blog Card 3 -->
+  <article class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-100">
+    <div class="h-52 overflow-hidden bg-gray-200">
+      <img src="https://placehold.co/600x400/2563eb/ffffff?text=PPE+Trends" alt="PPE Trends" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+    </div>
+    <div class="p-6 flex flex-col flex-1">
+      <div class="flex items-center gap-2 text-xs text-brand font-semibold uppercase tracking-wide mb-3">
+        <span>📅 June 18, 2025</span>
+        <span>•</span>
+        <span>4 min read</span>
+      </div>
+      <h2 class="text-xl font-bold text-navy-dark group-hover:text-brand transition line-clamp-2">Top PPE Trends for Industrial Buyers</h2>
+      <p class="mt-3 text-gray-600 text-sm leading-relaxed line-clamp-3">Discover the latest materials, smart PPE, and certifications that matter most for industrial procurement in 2025-2026.</p>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <a href="#" class="inline-flex items-center gap-2 text-brand font-semibold hover:gap-3 transition-all">Read full article 
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- Optional: Newsletter Signup -->
+<div class="mt-16 bg-brand/5 rounded-2xl p-6 md:p-8 text-center border border-brand/20">
+  <h3 class="text-2xl font-bold text-navy-dark">📬 Stay Updated</h3>
+  <p class="mt-2 text-gray-600">Get the latest safety guides and exclusive deals directly in your inbox.</p>
+  <form class="mt-5 max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+    <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand focus:border-transparent">
+    <button type="submit" class="bg-brand text-white px-6 py-2 rounded-xl hover:bg-brand-dark transition font-semibold">Subscribe →</button>
+  </form>
+</div>
+{% endblock %}

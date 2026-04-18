@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Flash Sale — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Hero Banner -->
+  <div class="relative mb-10 rounded-2xl overflow-hidden bg-gradient-to-r from-red-600 to-orange-600 text-white">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="relative p-8 md:p-12 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur px-4 py-1.5 rounded-full text-sm mb-4">
+        <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        LIMITED TIME OFFER
+      </div>
+      <h1 class="text-3xl md:text-5xl font-black mb-3">⚡ Flash Sale ⚡</h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">Save big on select safety products for a limited time. Hurry, offers end soon!</p>
+      <div class="flex justify-center gap-4 mt-6">
+        <div class="bg-white/20 backdrop-blur rounded-xl px-4 py-2 text-center min-w-[70px]">
+          <span class="text-2xl font-bold" id="days">00</span>
+          <p class="text-xs">Days</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur rounded-xl px-4 py-2 text-center min-w-[70px]">
+          <span class="text-2xl font-bold" id="hours">00</span>
+          <p class="text-xs">Hours</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur rounded-xl px-4 py-2 text-center min-w-[70px]">
+          <span class="text-2xl font-bold" id="minutes">00</span>
+          <p class="text-xs">Mins</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur rounded-xl px-4 py-2 text-center min-w-[70px]">
+          <span class="text-2xl font-bold" id="seconds">00</span>
+          <p class="text-xs">Secs</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if products %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for p in products %}
+    <div class="group bg-white rounded-2xl border-2 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:border-red-400 relative">
+      <!-- Sale Badge -->
+      <div class="absolute top-3 right-3 z-10">
+        <div class="bg-red-600 text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          FLASH SALE
+        </div>
+      </div>
+      
+      <!-- Discount Badge -->
+      {% if 'old_price' in p and p['old_price'] %}
+      <div class="absolute top-3 left-3 z-10">
+        <div class="bg-green-600 text-white text-xs font-black px-2 py-1 rounded-full">
+          {{ ((1 - p['price'] / p['old_price']) * 100)|round|int }}% OFF
+        </div>
+      </div>
+      {% endif %}
+      
+      <a href="/product/{{ p['id'] }}" class="block overflow-hidden h-56 bg-gradient-to-br from-gray-100 to-gray-200">
+        <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}"
+             class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+             onerror="this.src='https://placehold.co/600x400/1e3a5f/2563eb?text=Flash+Sale'" />
+      </a>
+      <div class="p-5 flex flex-col gap-3">
+        <span class="text-xs text-gray-500 uppercase tracking-wide flex items-center gap-2">
+          <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+          {{ p['category'] }}
+        </span>
+        <a href="/product/{{ p['id'] }}" class="text-navy-dark font-bold text-lg hover:text-brand transition line-clamp-2">{{ p['name'] }}</a>
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-brand-dark font-extrabold text-2xl">₹{{ "%.2f"|format(p['price']) }}</span>
+            {% if 'old_price' in p and p['old_price'] %}
+            <span class="text-gray-400 text-sm line-through ml-2">₹{{ "%.2f"|format(p['old_price']) }}</span>
+            {% endif %}
+          </div>
+          <form action="/cart/add/{{ p['id'] }}" method="post">
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition text-sm font-bold shadow-md flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Buy Now
+            </button>
+          </form>
+        </div>
+        
+        <!-- Stock indicator -->
+        <div class="mt-2 pt-2 border-t border-gray-100">
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>🔥 Limited stock</span>
+            <span>Hurry up!</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-1.5">
+            <div class="bg-red-500 rounded-full h-1.5" style="width: 35%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Trust Badges -->
+  <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <div class="text-2xl mb-2">🚚</div>
+      <p class="font-semibold text-sm">Free Shipping</p>
+      <p class="text-xs text-gray-500">On orders ₹250+</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <div class="text-2xl mb-2">🛡️</div>
+      <p class="font-semibold text-sm">Secure Checkout</p>
+      <p class="text-xs text-gray-500">100% Protected</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <div class="text-2xl mb-2">↺</div>
+      <p class="font-semibold text-sm">Easy Returns</p>
+      <p class="text-xs text-gray-500">30-Day Policy</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <div class="text-2xl mb-2">💎</div>
+      <p class="font-semibold text-sm">Premium Quality</p>
+      <p class="text-xs text-gray-500">Certified Products</p>
+    </div>
+  </div>
+  
+  {% else %}
+  <div class="rounded-2xl bg-white border-2 border-gray-200 p-12 text-center">
+    <div class="text-7xl mb-4">⏰</div>
+    <p class="text-xl font-semibold text-gray-700">No flash sale items available right now</p>
+    <p class="text-gray-500 mt-2">Check back soon for exciting discounts and deals!</p>
+    <a href="/" class="mt-6 inline-flex items-center gap-2 bg-brand text-white px-6 py-3 rounded-xl hover:bg-brand-dark transition shadow-md">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Browse All Products
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Countdown Timer (Set to 48 hours from now)
+  function startCountdown() {
+    const targetDate = new Date();
+    targetDate.setHours(targetDate.getHours() + 48);
+    
+    function updateTimer() {
+      const now = new Date();
+      const diff = targetDate - now;
+      
+      if (diff <= 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (86400000)) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+    
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  }
+  
+  startCountdown();
+</script>
+{% endblock %}
