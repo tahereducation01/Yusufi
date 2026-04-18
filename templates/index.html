@@ -8,26 +8,39 @@
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
       <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
       </svg>
       Shop by Category
     </h2>
-    <a href="/categories" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></a>
+    <a href="/categories" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg
+        class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg></a>
   </div>
-  
+
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
     {% for row in categories[:10] %}
-      {% set cat = row['category'] %}
-      
-      <a href="/category/{{ cat | urlencode }}" class="group flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-        <div class="w-28 h-28 md:w-32 md:h-32 mb-4 rounded-2xl bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-transparent group-hover:border-brand shadow-sm group-hover:shadow-md transition-all flex items-center justify-center">
-          <svg class="w-10 h-10 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-          </svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-800 group-hover:text-brand transition-colors">{{ cat }}</h3>
-        <p class="text-xs text-gray-400 mt-1">Shop Now →</p>
-      </a>
+    {% set cat = row['category'] %}
+
+    <a href="/category/{{ cat | urlencode }}"
+      class="group flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
+      <div
+        class="w-28 h-28 md:w-32 md:h-32 mb-4 rounded-2xl bg-white border border-gray-200 group-hover:border-brand shadow-sm group-hover:shadow-md transition-all flex items-center justify-center overflow-hidden p-3">
+        {% if row['image_url'] %}
+        <img src="{{ row['image_url'] }}" alt="{{ cat }}"
+          class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+          onerror="this.style.display='none'" />
+        {% else %}
+        <svg class="w-10 h-10 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        {% endif %}
+      </div>
+      <h3 class="text-sm font-bold text-gray-800 group-hover:text-brand transition-colors">{{ cat }}</h3>
+      <p class="text-xs text-gray-400 mt-1">Shop Now →</p>
+    </a>
     {% endfor %}
   </div>
 </section>
@@ -39,21 +52,27 @@
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
         <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
         Top Brands
       </h2>
-      <a href="/brands" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></a>
+      <a href="/brands" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg class="w-4 h-4"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg></a>
     </div>
-    
+
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {% for row in brands[:12] %}
-        <a href="/brand/{{ row['brand'] | urlencode }}" class="group block rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand hover:-translate-y-1">
-          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-700 text-lg font-bold mb-2 transition-colors group-hover:bg-brand group-hover:text-white">
-            {{ row['brand'][0] if row['brand'] else 'B' }}
-          </div>
-          <h3 class="text-sm font-semibold text-gray-800 group-hover:text-brand line-clamp-1">{{ row['brand'] }}</h3>
-        </a>
+      <a href="/brand/{{ row['brand'] | urlencode }}"
+        class="group block rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand hover:-translate-y-1">
+        <div
+          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-700 text-lg font-bold mb-2 transition-colors group-hover:bg-brand group-hover:text-white">
+          {{ row['brand'][0] if row['brand'] else 'B' }}
+        </div>
+        <h3 class="text-sm font-semibold text-gray-800 group-hover:text-brand line-clamp-1">{{ row['brand'] }}</h3>
+      </a>
       {% endfor %}
     </div>
   </div>
@@ -64,14 +83,17 @@
 <section class="mb-14">
   <div class="bg-gradient-to-r from-brand to-brand-dark rounded-2xl p-8 text-center text-white">
     <h2 class="text-2xl md:text-3xl font-black mb-3">Need Expert Advice?</h2>
-    <p class="text-white/90 max-w-2xl mx-auto mb-6">Our safety experts are here to help you choose the right equipment for your industry.</p>
+    <p class="text-white/90 max-w-2xl mx-auto mb-6">Our safety experts are here to help you choose the right equipment
+      for your industry.</p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/contact" class="bg-white text-brand px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition shadow-md">
+      <a href="/contact"
+        class="bg-white text-brand px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition shadow-md">
         Contact Support
       </a>
-      <a href="/flash-sale" class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-md inline-flex items-center gap-2">
+      <a href="/flash-sale"
+        class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-md inline-flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         Flash Sale
       </a>
