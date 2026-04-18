@@ -16,26 +16,14 @@
   </div>
   
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-    {% set cat_images = {
-      'Helmet': 'https://placehold.co/400x400/ffffff/2563eb?text=⛑️',
-      'Jacket': 'https://placehold.co/400x400/ffffff/2563eb?text=🧥',
-      'Engineering Hand Gloves': 'https://placehold.co/400x400/ffffff/2563eb?text=🧤',
-      'Goggles': 'https://placehold.co/400x400/ffffff/2563eb?text=🥽',
-      'Glass': 'https://placehold.co/400x400/ffffff/2563eb?text=👓',
-      'Ear Plug': 'https://placehold.co/400x400/ffffff/2563eb?text=🎧',
-      'Mask': 'https://placehold.co/400x400/ffffff/2563eb?text=😷',
-      'Shoes': 'https://placehold.co/400x400/ffffff/2563eb?text=👞',
-      'Apron': 'https://placehold.co/400x400/ffffff/2563eb?text=🧵',
-      'Fire Extinguisher': 'https://placehold.co/400x400/ffffff/2563eb?text=🧯'
-    } %}
-
     {% for row in categories[:10] %}
       {% set cat = row['category'] %}
-      {% set img_url = cat_images.get(cat, 'https://placehold.co/400x400/ffffff/2563eb?text=' + cat[:3]) %}
       
       <a href="/category/{{ cat | urlencode }}" class="group flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-        <div class="w-28 h-28 md:w-32 md:h-32 mb-4 rounded-2xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 group-hover:border-brand shadow-sm group-hover:shadow-md transition-all flex items-center justify-center">
-          <img src="{{ img_url }}" alt="{{ cat }}" class="w-16 h-16 object-contain" />
+        <div class="w-28 h-28 md:w-32 md:h-32 mb-4 rounded-2xl bg-gradient-to-br from-brand/10 to-brand/5 border-2 border-transparent group-hover:border-brand shadow-sm group-hover:shadow-md transition-all flex items-center justify-center">
+          <svg class="w-10 h-10 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
         </div>
         <h3 class="text-sm font-bold text-gray-800 group-hover:text-brand transition-colors">{{ cat }}</h3>
         <p class="text-xs text-gray-400 mt-1">Shop Now →</p>
