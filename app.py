@@ -260,7 +260,13 @@ def inject_nav_data():
 
 @app.route("/")
 def index():
-    categories = query_db("SELECT name AS category FROM categories ORDER BY name")
+    # Fetch category names along with the image of the first product in that category
+    categories = query_db("""
+        SELECT c.name AS category,
+               (SELECT p.image_url FROM products p WHERE p.category = c.name LIMIT 1) AS image_url
+        FROM categories c 
+        ORDER BY c.name
+    """)
     brands = query_db("SELECT name AS brand FROM brands ORDER BY name")
     return render_template("index.html", categories=categories, brands=brands)
 
@@ -312,7 +318,12 @@ def brands_list():
 
 @app.route("/categories")
 def categories_list():
-    categories = query_db("SELECT name AS category FROM categories ORDER BY name")
+    categories = query_db("""
+        SELECT c.name AS category,
+               (SELECT p.image_url FROM products p WHERE p.category = c.name LIMIT 1) AS image_url
+        FROM categories c 
+        ORDER BY c.name
+    """)
     return render_template("categories.html", categories=categories)
 
 
