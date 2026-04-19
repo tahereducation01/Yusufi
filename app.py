@@ -1,5 +1,5 @@
 import os
-import sqlite3
+import mysql.connector 
 from datetime import datetime
 from functools import wraps
 
@@ -25,8 +25,12 @@ ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
+        db = g._database = mysql.connector.connect(
+            host=os.environ.get("DB_HOST", "localhost"),
+            user=os.environ.get("DB_USER", "root"),
+            password=os.environ.get("DB_PASSWORD", ""),
+            database=os.environ.get("DB_NAME", "safetyshop")
+        )
     return db
 
 
@@ -38,7 +42,8 @@ def close_connection(exception):
 
 
 def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
+    cur = get_db().cursor(dictionary=True)
+    cur.execute(query, args)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
@@ -46,8 +51,10 @@ def query_db(query, args=(), one=False):
 
 def execute_db(query, args=()):
     db = get_db()
-    cur = db.execute(query, args)
+    cur = db.cursor()
+    cur.execute(query, args)
     db.commit()
+    cur.close()
     return cur.lastrowid
 
 
@@ -56,8 +63,13 @@ def execute_db(query, args=()):
 # ---------------------------------------------------------------------------
 
 def init_db():
-    db = sqlite3.connect(DATABASE)
-    db.row_factory = sqlite3.Row
+    db = mysql.connector.connect(
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        database=os.environ.get("DB_NAME", "safetyshop")
+    )
+    cur = db.cursor(dictionary=True)
     db.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -137,7 +149,8 @@ def init_db():
     """)
 
     # Seed products only if the table is empty
-    count = db.execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    cur.execute("SELECT COUNT(*) as count FROM products")
+    count = cur.fetchone()['count']
     if count == 0:
         products = [
             ("Helmet", "Karam", "Karam Safety Helmet PN521", "High impact ABS material with 6-point plastic suspension.", 145.00, 150, "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop"),
@@ -151,35 +164,39 @@ def init_db():
             ("Apron", "Udyogi", "PVC Heavy Duty Apron", "Chemical and splash resistant PVC apron for industrial use.", 180.00, 60, "https://images.unsplash.com/photo-1583337222485-6111e138a202?q=80&w=800&auto=format&fit=crop"),
             ("Fire Extinguisher", "Safex", "ABC Powder Fire Extinguisher", "6kg ABC dry powder extinguisher, ISI marked.", 1150.00, 40, "https://images.unsplash.com/photo-1563212036-7c152ce8a35e?q=80&w=800&auto=format&fit=crop")
         ]
-        db.executemany(
-            "INSERT INTO products (category, brand, name, description, price, stock_quantity, image_url) VALUES (?,?,?,?,?,?,?)",
+        cur.executemany(
+            "INSERT INTO products (category, brand, name, description, price, stock_quantity, image_url) VALUES (%s,%s,%s,%s,%s,%s,%s)",
             products,
         )
         db.commit()
 
     # Seed category and brand lookup tables for admin management
-    categories = [row[0] for row in db.execute("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND TRIM(category) <> ''").fetchall()]
+    cur.execute("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND TRIM(category) <> ''")
+    categories = [row['category'] for row in cur.fetchall()]
     print(f"Found categories: {categories}")
     for category_name in categories:
-        db.execute("INSERT OR IGNORE INTO categories (name) VALUES (?)", [category_name])
+        cur.execute("INSERT IGNORE INTO categories (name) VALUES (%s)", (category_name,))
 
-    brands = [row[0] for row in db.execute("SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND TRIM(brand) <> ''").fetchall()]
+    cur.execute("SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND TRIM(brand) <> ''")
+    brands = [row['brand'] for row in cur.fetchall()]
     print(f"Found brands: {brands}")
     for brand_name in brands:
-        db.execute("INSERT OR IGNORE INTO brands (name) VALUES (?)", [brand_name])
+        cur.execute("INSERT IGNORE INTO brands (name) VALUES (%s)", (brand_name,))
 
     # Create a default admin user if none exists
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@safetyshop.local")
     admin_password = os.environ.get("ADMIN_PASSWORD", "Admin@123")
-    existing_admin = db.execute("SELECT id FROM users WHERE email = ?", [admin_email]).fetchone()
+    cur.execute("SELECT id FROM users WHERE email = %s", (admin_email,))
+    existing_admin = cur.fetchone()
     if not existing_admin:
-        db.execute(
-            "INSERT INTO users (name, email, password_hash, is_admin) VALUES (?, ?, ?, 1)",
-            ["Admin", admin_email, generate_password_hash(admin_password)],
+        cur.execute(
+            "INSERT INTO users (name, email, password_hash, is_admin) VALUES (%s, %s, %s, 1)",
+            ("Admin", admin_email, generate_password_hash(admin_password)),
         )
         print(f"Default admin created: {admin_email}")
 
     db.commit()
+    cur.close()
     db.close()
 
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -205,7 +222,7 @@ def admin_required(f):
         if "user_id" not in session:
             flash("Please log in to continue.", "warning")
             return redirect(url_for("login"))
-        user = query_db("SELECT is_admin FROM users WHERE id = ?", [session["user_id"]], one=True)
+        user = query_db("SELECT is_admin FROM users WHERE id = %s", [session["user_id"]], one=True)
         if not user or user["is_admin"] != 1:
             flash("Admin access is required to view that page.", "danger")
             return redirect(url_for("dashboard"))
@@ -274,7 +291,7 @@ def index():
 @app.route("/brand/<brand_name>")
 def brand(brand_name):
     products = query_db(
-        "SELECT * FROM products WHERE brand = ? ORDER BY name",
+        "SELECT * FROM products WHERE brand = %s ORDER BY name",
         [brand_name],
     )
     categories = query_db("SELECT name AS category FROM categories ORDER BY name")
@@ -294,7 +311,7 @@ def brand(brand_name):
 def category(category_name):
     print(f"Category name: {repr(category_name)}")
     products = query_db(
-        "SELECT * FROM products WHERE category = ? ORDER BY name",
+        "SELECT * FROM products WHERE category = %s ORDER BY name",
         [category_name],
     )
     print(f"Products found: {len(products)}")
@@ -347,14 +364,14 @@ def search():
     # Search products by name, description, category, brand
     products = query_db("""
         SELECT * FROM products
-        WHERE name LIKE ? OR description LIKE ? OR category LIKE ? OR brand LIKE ?
+        WHERE name LIKE %s OR description LIKE %s OR category LIKE %s OR brand LIKE %s
         ORDER BY name
     """, [f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%"])
 
     # Search categories
     categories = query_db("""
         SELECT DISTINCT category FROM products
-        WHERE category LIKE ?
+        WHERE category LIKE %s
         ORDER BY category
     """, [f"%{query}%"])
 
@@ -367,14 +384,14 @@ def search():
 
 @app.route("/product/<int:product_id>")
 def product_detail(product_id):
-    product = query_db("SELECT * FROM products WHERE id = ?", [product_id], one=True)
+    product = query_db("SELECT * FROM products WHERE id = %s", [product_id], one=True)
     if product is None:
         flash("Product not found.", "danger")
         return redirect(url_for("index"))
 
     current_user = None
     if "user_id" in session:
-        current_user = query_db("SELECT name, email FROM users WHERE id = ?", [session["user_id"]], one=True)
+        current_user = query_db("SELECT name, email FROM users WHERE id = %s", [session["user_id"]], one=True)
 
     return render_template("product_detail.html", product=product, current_user=current_user)
 
@@ -403,7 +420,7 @@ def cart():
 
 @app.route("/cart/add/<int:product_id>", methods=["POST"])
 def add_to_cart(product_id):
-    product = query_db("SELECT * FROM products WHERE id = ?", [product_id], one=True)
+    product = query_db("SELECT * FROM products WHERE id = %s", [product_id], one=True)
     if product is None:
         return jsonify({"success": False, "message": "Product not found"}), 404
 
@@ -478,18 +495,18 @@ def checkout():
         user_id = session.get("user_id")
 
         order_id = execute_db(
-            "INSERT INTO orders (user_id, full_name, address, phone, total_amount, status) VALUES (?,?,?,?,?,?)",
+            "INSERT INTO orders (user_id, full_name, address, phone, total_amount, status) VALUES (%s,%s,%s,%s,%s,%s)",
             [user_id, full_name, address, phone, total, "Confirmed"],
         )
 
         for pid, info in cart.items():
             execute_db(
-                "INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES (?,?,?,?)",
+                "INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES (%s,%s,%s,%s)",
                 [order_id, int(pid), info["qty"], info["price"]],
             )
             # Decrement stock
             execute_db(
-                "UPDATE products SET stock_quantity = MAX(0, stock_quantity - ?) WHERE id = ?",
+                "UPDATE products SET stock_quantity = GREATEST(0, stock_quantity - %s) WHERE id = %s",
                 [info["qty"], int(pid)],
             )
 
@@ -512,7 +529,7 @@ def checkout():
 
 @app.route("/order/confirmation/<int:order_id>")
 def order_confirmation(order_id):
-    order = query_db("SELECT * FROM orders WHERE id = ?", [order_id], one=True)
+    order = query_db("SELECT * FROM orders WHERE id = %s", [order_id], one=True)
     return render_template("order_confirmation.html", order=order)
 
 
@@ -531,14 +548,14 @@ def register():
             flash("All fields are required.", "danger")
             return redirect(url_for("register"))
 
-        existing = query_db("SELECT id FROM users WHERE email = ?", [email], one=True)
+        existing = query_db("SELECT id FROM users WHERE email = %s", [email], one=True)
         if existing:
             flash("An account with that email already exists.", "danger")
             return redirect(url_for("register"))
 
         pw_hash = generate_password_hash(password)
         user_id = execute_db(
-            "INSERT INTO users (name, email, password_hash) VALUES (?,?,?)",
+            "INSERT INTO users (name, email, password_hash) VALUES (%s,%s,%s)",
             [name, email, pw_hash],
         )
         session["user_id"] = user_id
@@ -556,7 +573,7 @@ def login():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
 
-        user = query_db("SELECT * FROM users WHERE email = ?", [email], one=True)
+        user = query_db("SELECT * FROM users WHERE email = %s", [email], one=True)
         if user and check_password_hash(user["password_hash"], password):
             session["user_id"] = user["id"]
             session["user_name"] = user["name"]
@@ -664,7 +681,7 @@ def admin_brand_new():
         if not name:
             flash("Brand name is required.", "danger")
             return redirect(url_for("admin_brand_new"))
-        execute_db("INSERT OR IGNORE INTO brands (name, description) VALUES (?, ?)", [name, description])
+        execute_db("INSERT IGNORE INTO brands (name, description) VALUES (%s, %s)", [name, description])
         flash("Brand created successfully.", "success")
         return redirect(url_for("admin_brands"))
     return render_template("admin/brand_form.html", action="Create", brand=None)
@@ -683,8 +700,8 @@ def admin_brand_edit(brand_id):
         if not name:
             flash("Brand name is required.", "danger")
             return redirect(url_for("admin_brand_edit", brand_id=brand_id))
-        execute_db("UPDATE brands SET name = ?, description = ? WHERE id = ?", [name, description, brand_id])
-        execute_db("UPDATE products SET brand = ? WHERE brand = ?", [name, brand["name"]])
+        execute_db("UPDATE brands SET name = %s, description = %s WHERE id = %s", [name, description, brand_id])
+        execute_db("UPDATE products SET brand = %s WHERE brand = %s", [name, brand["name"]])
         flash("Brand updated successfully.", "success")
         return redirect(url_for("admin_brands"))
     return render_template("admin/brand_form.html", action="Edit", brand=brand)
@@ -693,10 +710,10 @@ def admin_brand_edit(brand_id):
 @app.route("/admin/brands/<int:brand_id>/delete", methods=["POST"])
 @admin_required
 def admin_brand_delete(brand_id):
-    brand = query_db("SELECT * FROM brands WHERE id = ?", [brand_id], one=True)
+    brand = query_db("SELECT * FROM brands WHERE id = %s", [brand_id], one=True)
     if brand:
-        execute_db("DELETE FROM brands WHERE id = ?", [brand_id])
-        execute_db("UPDATE products SET brand = NULL WHERE brand = ?", [brand["name"]])
+        execute_db("DELETE FROM brands WHERE id = %s", [brand_id])
+        execute_db("UPDATE products SET brand = NULL WHERE brand = %s", [brand["name"]])
         flash("Brand deleted and linked products cleared.", "success")
     else:
         flash("Brand not found.", "danger")
@@ -719,7 +736,7 @@ def admin_category_new():
         if not name:
             flash("Category name is required.", "danger")
             return redirect(url_for("admin_category_new"))
-        execute_db("INSERT OR IGNORE INTO categories (name, description) VALUES (?, ?)", [name, description])
+        execute_db("INSERT IGNORE INTO categories (name, description) VALUES (%s, %s)", [name, description])
         flash("Category created successfully.", "success")
         return redirect(url_for("admin_categories"))
     return render_template("admin/category_form.html", action="Create", category=None)
@@ -738,8 +755,8 @@ def admin_category_edit(category_id):
         if not name:
             flash("Category name is required.", "danger")
             return redirect(url_for("admin_category_edit", category_id=category_id))
-        execute_db("UPDATE categories SET name = ?, description = ? WHERE id = ?", [name, description, category_id])
-        execute_db("UPDATE products SET category = ? WHERE category = ?", [name, category["name"]])
+        execute_db("UPDATE categories SET name = %s, description = %s WHERE id = %s", [name, description, category_id])
+        execute_db("UPDATE products SET category = %s WHERE category = %s", [name, category["name"]])
         flash("Category updated successfully.", "success")
         return redirect(url_for("admin_categories"))
     return render_template("admin/category_form.html", action="Edit", category=category)
@@ -748,11 +765,11 @@ def admin_category_edit(category_id):
 @app.route("/admin/categories/<int:category_id>/delete", methods=["POST"])
 @admin_required
 def admin_category_delete(category_id):
-    category = query_db("SELECT * FROM categories WHERE id = ?", [category_id], one=True)
+    category = query_db("SELECT * FROM categories WHERE id = %s", [category_id], one=True)
     if category:
-        execute_db("DELETE FROM categories WHERE id = ?", [category_id])
-        execute_db("INSERT OR IGNORE INTO categories (name) VALUES (?)", ["Uncategorized"])
-        execute_db("UPDATE products SET category = 'Uncategorized' WHERE category = ?", [category["name"]])
+        execute_db("DELETE FROM categories WHERE id = %s", [category_id])
+        execute_db("INSERT IGNORE INTO categories (name) VALUES (%s)", ["Uncategorized"])
+        execute_db("UPDATE products SET category = 'Uncategorized' WHERE category = %s", [category["name"]])
         flash("Category deleted. Products have been moved to Uncategorized.", "success")
     else:
         flash("Category not found.", "danger")
@@ -787,11 +804,11 @@ def admin_product_new():
             flash("Name, category, and price are required.", "danger")
             return redirect(url_for("admin_product_new"))
         execute_db(
-            "INSERT INTO products (category, brand, name, description, price, stock_quantity, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO products (category, brand, name, description, price, stock_quantity, image_url) VALUES (%s, %s, %s, %s, %s, %s, %s)",
             [category, brand, name, description, float(price), int(stock_quantity), image_url],
         )
-        execute_db("INSERT OR IGNORE INTO categories (name) VALUES (?)", [category])
-        execute_db("INSERT OR IGNORE INTO brands (name) VALUES (?)", [brand])
+        execute_db("INSERT IGNORE INTO categories (name) VALUES (%s)", [category])
+        execute_db("INSERT IGNORE INTO brands (name) VALUES (%s)", [brand])
         flash("Product created successfully.", "success")
         return redirect(url_for("admin_products"))
     return render_template("admin/product_form.html", action="Create", product=None, categories=categories, brands=brands)
@@ -800,7 +817,7 @@ def admin_product_new():
 @app.route("/admin/products/<int:product_id>/edit", methods=["GET", "POST"])
 @admin_required
 def admin_product_edit(product_id):
-    product = query_db("SELECT * FROM products WHERE id = ?", [product_id], one=True)
+    product = query_db("SELECT * FROM products WHERE id = %s", [product_id], one=True)
     if product is None:
         flash("Product not found.", "danger")
         return redirect(url_for("admin_products"))
@@ -822,11 +839,11 @@ def admin_product_edit(product_id):
             flash("Name, category, and price are required.", "danger")
             return redirect(url_for("admin_product_edit", product_id=product_id))
         execute_db(
-            "UPDATE products SET category = ?, brand = ?, name = ?, description = ?, price = ?, stock_quantity = ?, image_url = ? WHERE id = ?",
+            "UPDATE products SET category = %s, brand = %s, name = %s, description = %s, price = %s, stock_quantity = %s, image_url = %s WHERE id = %s",
             [category, brand, name, description, float(price), int(stock_quantity), image_url, product_id],
         )
-        execute_db("INSERT OR IGNORE INTO categories (name) VALUES (?)", [category])
-        execute_db("INSERT OR IGNORE INTO brands (name) VALUES (?)", [brand])
+        execute_db("INSERT IGNORE INTO categories (name) VALUES (%s)", [category])
+        execute_db("INSERT IGNORE INTO brands (name) VALUES (%s)", [brand])
         flash("Product updated successfully.", "success")
         return redirect(url_for("admin_products"))
     return render_template("admin/product_form.html", action="Edit", product=product, categories=categories, brands=brands)
@@ -835,9 +852,9 @@ def admin_product_edit(product_id):
 @app.route("/admin/products/<int:product_id>/delete", methods=["POST"])
 @admin_required
 def admin_product_delete(product_id):
-    product = query_db("SELECT * FROM products WHERE id = ?", [product_id], one=True)
+    product = query_db("SELECT * FROM products WHERE id = %s", [product_id], one=True)
     if product:
-        execute_db("DELETE FROM products WHERE id = ?", [product_id])
+        execute_db("DELETE FROM products WHERE id = %s", [product_id])
         flash("Product deleted successfully.", "success")
     else:
         flash("Product not found.", "danger")
