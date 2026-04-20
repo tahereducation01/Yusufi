@@ -63,94 +63,95 @@ def execute_db(query, args=()):
 # ---------------------------------------------------------------------------
 
 def init_db():
-    db = mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "root"),
-        password=os.environ.get("DB_PASSWORD", ""),
-        database=os.environ.get("DB_NAME", "safetyshop")
-    )
+    db = get_db()
     cur = db.cursor(dictionary=True)
-    db.executescript("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
+    
+    table_queries = [
+        """CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            is_admin INTEGER NOT NULL DEFAULT 0,
+            is_admin TINYINT NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE IF NOT EXISTS brands (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS brands (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) UNIQUE NOT NULL,
             description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE IF NOT EXISTS categories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS categories (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) UNIQUE NOT NULL,
             description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            category TEXT NOT NULL,
-            brand TEXT,
-            name TEXT NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS products (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            category VARCHAR(255) NOT NULL,
+            brand VARCHAR(255),
+            name VARCHAR(255) NOT NULL,
             description TEXT,
-            price REAL NOT NULL,
-            stock_quantity INTEGER NOT NULL DEFAULT 0,
+            price DECIMAL(10,2) NOT NULL,
+            stock_quantity INT NOT NULL DEFAULT 0,
             image_url TEXT
-        );
-        CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            full_name TEXT NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS orders (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            full_name VARCHAR(255) NOT NULL,
             address TEXT NOT NULL,
-            phone TEXT NOT NULL,
-            total_amount REAL NOT NULL,
-            status TEXT NOT NULL DEFAULT 'Pending',
+            phone VARCHAR(50) NOT NULL,
+            total_amount DECIMAL(10,2) NOT NULL,
+            status VARCHAR(50) NOT NULL DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-        CREATE TABLE IF NOT EXISTS order_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
-            quantity INTEGER NOT NULL,
-            price_at_purchase REAL NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS order_items (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            order_id INT NOT NULL,
+            product_id INT NOT NULL,
+            quantity INT NOT NULL,
+            price_at_purchase DECIMAL(10,2) NOT NULL,
             FOREIGN KEY (order_id) REFERENCES orders(id),
             FOREIGN KEY (product_id) REFERENCES products(id)
-        );
-        CREATE TABLE IF NOT EXISTS bids (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_id INTEGER NOT NULL,
-            user_id INTEGER,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            offered_price REAL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS bids (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            user_id INT,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            offered_price DECIMAL(10,2),
             note TEXT,
-            status TEXT NOT NULL DEFAULT 'Pending',
+            status VARCHAR(50) NOT NULL DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (product_id) REFERENCES products(id),
             FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-        CREATE TABLE IF NOT EXISTS contacts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            phone TEXT NOT NULL,
-            subject TEXT NOT NULL,
+        )""",
+        """CREATE TABLE IF NOT EXISTS contacts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone VARCHAR(50) NOT NULL,
+            subject VARCHAR(255) NOT NULL,
             message TEXT NOT NULL,
-            status TEXT NOT NULL DEFAULT 'Unread',
+            status VARCHAR(50) NOT NULL DEFAULT 'Unread',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-    """)
+        )"""
+    ]
+
+    for q in table_queries:
+        cur.execute(q)
+    db.commit()
 
     # Seed products only if the table is empty
     cur.execute("SELECT COUNT(*) as count FROM products")
     count = cur.fetchone()['count']
+    
     if count == 0:
         products = [
             ("Helmet", "Karam", "Karam Safety Helmet PN521", "High impact ABS material with 6-point plastic suspension.", 145.00, 150, "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop"),
@@ -170,38 +171,31 @@ def init_db():
         )
         db.commit()
 
-    # Seed category and brand lookup tables for admin management
+    # Seed category and brand lookup tables
     cur.execute("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND TRIM(category) <> ''")
     categories = [row['category'] for row in cur.fetchall()]
-    print(f"Found categories: {categories}")
     for category_name in categories:
-        cur.execute("INSERT IGNORE INTO categories (name) VALUES (%s)", (category_name,))
+        cur.execute("INSERT IGNORE INTO categories (name) VALUES (%s)", [category_name])
 
     cur.execute("SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND TRIM(brand) <> ''")
     brands = [row['brand'] for row in cur.fetchall()]
-    print(f"Found brands: {brands}")
     for brand_name in brands:
-        cur.execute("INSERT IGNORE INTO brands (name) VALUES (%s)", (brand_name,))
+        cur.execute("INSERT IGNORE INTO brands (name) VALUES (%s)", [brand_name])
 
     # Create a default admin user if none exists
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@safetyshop.local")
     admin_password = os.environ.get("ADMIN_PASSWORD", "Admin@123")
-    cur.execute("SELECT id FROM users WHERE email = %s", (admin_email,))
-    existing_admin = cur.fetchone()
-    if not existing_admin:
+    cur.execute("SELECT id FROM users WHERE email = %s", [admin_email])
+    if not cur.fetchone():
         cur.execute(
             "INSERT INTO users (name, email, password_hash, is_admin) VALUES (%s, %s, %s, 1)",
-            ("Admin", admin_email, generate_password_hash(admin_password)),
+            ["Admin", admin_email, generate_password_hash(admin_password)],
         )
-        print(f"Default admin created: {admin_email}")
 
     db.commit()
     cur.close()
-    db.close()
 
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
 # ---------------------------------------------------------------------------
 # Auth helpers
 # ---------------------------------------------------------------------------
