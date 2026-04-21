@@ -22,6 +22,10 @@ ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 # Database helpers
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Database helpers
+# ---------------------------------------------------------------------------
+
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
@@ -33,29 +37,37 @@ def get_db():
         )
     return db
 
-
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
 
-
 def query_db(query, args=(), one=False):
-    cur = get_db().cursor(dictionary=True)
+    db = get_db()
+    # buffered=True prevents "Unread result found" collisions
+    cur = db.cursor(dictionary=True, buffered=True) 
+    
+    # Safely auto-translate all legacy SQLite queries to MySQL
+    query = query.replace("?", "%s")
     cur.execute(query, args)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-
 def execute_db(query, args=()):
     db = get_db()
     cur = db.cursor()
+    
+    # Safely auto-translate all legacy SQLite queries to MySQL
+    query = query.replace("?", "%s")
     cur.execute(query, args)
     db.commit()
+    
+    # CRITICAL FIX: Grab the inserted ID *before* closing the cursor
+    last_id = cur.lastrowid 
     cur.close()
-    return cur.lastrowid
+    return last_id
 
 
 # ---------------------------------------------------------------------------
