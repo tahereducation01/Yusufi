@@ -45,14 +45,19 @@ def close_connection(exception):
 
 def query_db(query, args=(), one=False):
     db = get_db()
-    # buffered=True prevents "Unread result found" collisions
     cur = db.cursor(dictionary=True, buffered=True) 
     
-    # Safely auto-translate all legacy SQLite queries to MySQL
     query = query.replace("?", "%s")
     cur.execute(query, args)
     rv = cur.fetchall()
     cur.close()
+
+    if rv:
+        for row in rv:
+            for key, val in row.items():
+                if hasattr(val, 'strftime'): 
+                    row[key] = str(val)      
+
     return (rv[0] if rv else None) if one else rv
 
 def execute_db(query, args=()):
