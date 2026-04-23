@@ -541,7 +541,7 @@ def checkout():
             "subtotal": qty * price,    
         })
     total = cart_total()
-    return render_template("checkout.html", items=items, total=total)return render_template("checkout.html", items=items, total=total)
+    return render_template("checkout.html", items=items, total=total)
 
 
 @app.route("/order/confirmation/<int:order_id>")
