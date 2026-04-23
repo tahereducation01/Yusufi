@@ -268,7 +268,7 @@ def cart_count():
 
 
 def cart_total():
-    return sum(item["qty"] * item["price"] for item in get_cart().values())
+    return sum(int(item["qty"]) * float(item["price"]) for item in get_cart().values())
 
 
 app.jinja_env.globals["cart_count"] = cart_count
@@ -277,7 +277,12 @@ app.jinja_env.globals["cart_total"] = cart_total
 
 @app.context_processor
 def inject_nav_data():
-    categories = query_db("SELECT name AS category FROM categories ORDER BY name")
+    categories = query_db("""
+        SELECT DISTINCT name AS category 
+        FROM categories c
+        WHERE EXISTS (SELECT 1 FROM products p WHERE p.category = c.name)
+        ORDER BY name
+    """)
     brands = query_db("SELECT name AS brand FROM brands ORDER BY name")
     return dict(nav_categories=categories, nav_brands=brands)
 
@@ -288,15 +293,17 @@ def inject_nav_data():
 
 @app.route("/")
 def index():
-    # Fetch category names along with the image of the first product in that category
+    # Only fetch categories that have products, and grab 8 random products for a new featured section
     categories = query_db("""
         SELECT c.name AS category,
                (SELECT p.image_url FROM products p WHERE p.category = c.name LIMIT 1) AS image_url
         FROM categories c 
+        WHERE EXISTS (SELECT 1 FROM products p WHERE p.category = c.name)
         ORDER BY c.name
     """)
     brands = query_db("SELECT name AS brand FROM brands ORDER BY name")
-    return render_template("index.html", categories=categories, brands=brands)
+    featured_products = query_db("SELECT * FROM products LIMIT 8") 
+    return render_template("index.html", categories=categories, brands=brands, featured_products=featured_products)
 
 
 @app.route("/brand/<brand_name>")
@@ -350,15 +357,10 @@ def categories_list():
         SELECT c.name AS category,
                (SELECT p.image_url FROM products p WHERE p.category = c.name LIMIT 1) AS image_url
         FROM categories c 
+        WHERE EXISTS (SELECT 1 FROM products p WHERE p.category = c.name)
         ORDER BY c.name
     """)
     return render_template("categories.html", categories=categories)
-
-
-@app.route("/blogs")
-def blogs():
-    return render_template("blogs.html")
-
 
 @app.route("/flash-sale")
 def flash_sale():
@@ -416,12 +418,14 @@ def cart():
     cart = get_cart()
     items = []
     for pid, info in cart.items():
+        qty = int(info["qty"])
+        price = float(info["price"])
         items.append({
             "id": pid,
             "name": info["name"],
-            "price": info["price"],
-            "qty": info["qty"],
-            "subtotal": info["qty"] * info["price"],
+            "price": price,
+            "qty": qty,
+            "subtotal": qty * price,
             "image_url": info.get("image_url", ""),
             "category": info.get("category", ""),
         })
@@ -439,12 +443,12 @@ def add_to_cart(product_id):
     cart = session.get("cart", {})
     pid = str(product_id)
     if pid in cart:
-        cart[pid]["qty"] += qty
+        cart[pid]["qty"] = int(cart[pid]["qty"]) + qty
     else:
         cart[pid] = {
             "name": product["name"],
-            "price": product["price"],
-            "qty": qty,
+            "price": float(product["price"]),
+            "qty": int(qty),
             "image_url": product["image_url"],
             "category": product["category"],
         }
@@ -527,15 +531,17 @@ def checkout():
 
     items = []
     for pid, info in cart.items():
+        qty = int(info["qty"])
+        price = float(info["price"])
         items.append({
             "id": pid,
             "name": info["name"],
-            "price": info["price"],
-            "qty": info["qty"],
-            "subtotal": info["qty"] * info["price"],
+            "price": price,
+            "qty": qty,
+            "subtotal": qty * price,    
         })
     total = cart_total()
-    return render_template("checkout.html", items=items, total=total)
+    return render_template("checkout.html", items=items, total=total)return render_template("checkout.html", items=items, total=total)
 
 
 @app.route("/order/confirmation/<int:order_id>")
