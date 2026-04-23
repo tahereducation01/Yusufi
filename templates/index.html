@@ -3,6 +3,33 @@
 
 {% block content %}
 
+<section class="relative w-full rounded-3xl overflow-hidden mb-14 shadow-2xl">
+  <div class="absolute inset-0 bg-navy-dark">
+    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2000&auto=format&fit=crop" alt="Industrial Hardware" class="w-full h-full object-cover opacity-40 mix-blend-overlay" />
+    <div class="absolute inset-0 bg-gradient-to-r from-navy-dark via-navy-dark/80 to-transparent"></div>
+  </div>
+
+  <div class="relative z-10 px-6 py-16 md:py-24 lg:py-32 max-w-4xl mx-auto md:mx-0 md:ml-12 text-center md:text-left flex flex-col items-center md:items-start">
+    <span class="inline-block py-1 px-3 rounded-full bg-brand/20 text-brand-light text-xs font-bold uppercase tracking-widest mb-4 border border-brand/30 backdrop-blur-sm">
+      Premium Industrial Supplies
+    </span>
+    <h1 class="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-tight mb-6">
+      Equip Your Workforce.<br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-brand">Secure Your Future.</span>
+    </h1>
+    <p class="text-gray-300 text-sm md:text-lg max-w-xl mb-8 leading-relaxed">
+      Wholesale industrial safety gear, certified hardware tools, and professional-grade PPE delivered directly to your site.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+      <a href="/categories" class="bg-brand text-white px-8 py-4 rounded-xl font-extrabold hover:bg-brand-dark hover:scale-105 transition-all shadow-lg shadow-brand/30 text-center">
+        Shop All Categories
+      </a>
+      <a href="/contact" class="bg-white/10 text-white border border-white/20 backdrop-blur-md px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all text-center">
+        Request Bulk Quote
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- Categories Section -->
 <section class="mb-14">
   <div class="flex items-center justify-between mb-6">
@@ -44,6 +71,44 @@
     {% endfor %}
   </div>
 </section>
+
+{% if featured_products %}
+<section class="mb-14">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
+      <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+      </svg>
+      Trending Products
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    {% for p in featured_products %}
+    <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden hover:border-brand/30">
+      <a href="/product/{{ p['id'] }}" class="block overflow-hidden h-48 bg-gray-50 relative p-4">
+        <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}" class="w-full h-full object-contain group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/600x400/1e3a5f/f59e0b?text=Yusufi+Hardware'" />
+      </a>
+      <div class="p-5 flex flex-col flex-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">{{ p['category'] }}</span>
+        <a href="/product/{{ p['id'] }}" class="text-navy-dark font-extrabold text-sm md:text-base hover:text-brand transition line-clamp-2 min-h-[2.5rem]">
+          {{ p['name'] }}
+        </a>
+        <div class="mt-auto pt-4 flex items-center justify-between gap-2">
+          <span class="text-brand-dark font-black text-lg">₹{{ "%.2f"|format(p['price']) }}</span>
+          <form action="/cart/add/{{ p['id'] }}" method="post">
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="bg-navy-dark hover:bg-brand text-white font-bold w-8 h-8 rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 <!-- Brands Section -->
 {% if brands %}
