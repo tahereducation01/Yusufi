@@ -73,137 +73,104 @@
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen antialiased">
 
   <!-- ====== STICKY HEADER ====== -->
-  <header class="sticky top-0 z-50 bg-white shadow-md">
-    <!-- Top Bar with Logo and Actions -->
-    <div class="max-w-7xl mx-auto px-4 py-3 lg:py-4">
-      <div class="flex items-center justify-between gap-3">
-        <!-- Mobile Menu Button & Logo -->
-        <div class="flex items-center gap-3">
-          <button id="mobile-menu-button"
-            class="lg:hidden p-2 text-gray-600 hover:text-brand rounded-lg hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand"
-            aria-label="Open mobile menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <a href="/" class="flex items-center gap-2 shrink-0 group">
-            <div
-              class="bg-brand/10 p-1 rounded-lg group-hover:bg-brand/20 transition-colors h-12 w-12 flex items-center justify-center">
-              <img src="/static/logo.png" alt="Yusufi Hardware Logo" class="h-10 w-10 object-contain" />
-            </div>
-            <div>
-              <span class="text-gray-800 font-black text-xl lg:text-2xl tracking-tight">Yusufi <span
-                  class="text-brand">Hardware</span></span>
-              <span class="hidden lg:inline-block text-[10px] font-semibold text-gray-400 ml-1 align-middle">™</span>
-            </div>
-          </a>
-        </div>
+  <header class="sticky top-0 z-50 bg-white flex flex-col shadow-sm">
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700">
-          {% if session.get('user_id') %}
-          <div class="relative group">
-            <button class="flex items-center gap-1 hover:text-brand transition py-2">
-              👤 {{ session.get('user_name','Account') }}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    <div class="border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 py-3 lg:py-4">
+        <div class="flex items-center justify-between gap-4 lg:gap-8">
+
+          <div class="flex items-center gap-3 shrink-0">
+            <button id="mobile-menu-button"
+              class="lg:hidden p-2 text-gray-600 hover:text-brand rounded-lg hover:bg-gray-100 transition-all focus:outline-none"
+              aria-label="Open mobile menu">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <div
-              class="absolute right-0 w-48 bg-white shadow-lg rounded-lg border border-gray-100 hidden group-hover:block animate-fade-in">
-              <a href="/dashboard" class="block px-4 py-2 text-sm hover:bg-gray-50">Dashboard</a>
-              {% if session.get('is_admin') %}
-              <a href="/admin" class="block px-4 py-2 text-sm hover:bg-gray-50">Admin Panel</a>
-              {% endif %}
-              <div class="border-t my-1"></div>
-              <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
-            </div>
+            <a href="/" class="flex items-center gap-2 group">
+              <div
+                class="bg-brand/10 p-1.5 rounded-xl group-hover:bg-brand/20 transition-colors flex items-center justify-center">
+                <img src="/static/logo.png" alt="Yusufi Hardware Logo" class="h-8 w-8 md:h-10 md:w-10 object-contain"
+                  onerror="this.style.display='none'" />
+              </div>
+              <div class="hidden sm:block">
+                <span class="text-navy-dark font-black text-xl lg:text-2xl tracking-tight">Yusufi <span
+                    class="text-brand">Hardware</span></span>
+              </div>
+            </a>
           </div>
-          {% else %}
-          <a href="/login" class="hover:text-brand transition">Login</a>
-          <a href="/register"
-            class="bg-brand/10 text-brand px-4 py-1.5 rounded-full hover:bg-brand hover:text-white transition">Register</a>
-          {% endif %}
-        </nav>
 
-
-        <!-- Cart Button -->
-        <a href="/cart"
-          class="relative p-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-all duration-200 shadow-sm hover:shadow-md group">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7h12.8M7 13L5.4 5M17 21a1 1 0 100-2 1 1 0 000 2zm-10 0a1 1 0 100-2 1 1 0 000 2z" />
-          </svg>
-          <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-sm">{{ cart_count() }}</span>
-        </a>
-      </div>
-
-      <!-- Mobile Search Bar -->
-      <div class="lg:hidden mt-3">
-        <form action="/search" method="get" class="flex w-full">
-          <input type="text" name="q" placeholder="Search for tools, safety gear, hardware..."
-            class="flex-1 border border-gray-300 rounded-l-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-gray-50" />
-          <button type="submit" class="bg-brand text-white px-5 py-2.5 rounded-r-xl hover:bg-brand-dark transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Desktop Mega Navigation Bar -->
-    <div class="hidden lg:block bg-brand text-white shadow-inner">
-      <div class="max-w-7xl mx-auto flex items-stretch">
-        <!-- Categories Mega Dropdown -->
-        <div
-          class="relative group bg-brand-dark px-6 py-3.5 flex items-center gap-2 cursor-pointer border-r border-brand/30">
-          <span class="font-bold text-base">All Categories</span>
-          <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-          <div
-            class="absolute left-0 top-full w-72 bg-white text-gray-800 shadow-2xl rounded-b-xl hidden group-hover:block animate-slide-down z-50 border border-gray-100 overflow-hidden">
-            <div class="max-h-96 overflow-y-auto">
-              {% for cat in nav_categories %}
-              <a href="{{ url_for('category', category_name=cat['category']) }}"
-                class="flex items-center justify-between px-5 py-3 text-sm hover:bg-brand/5 hover:text-brand transition border-b border-gray-50 last:border-0">
-                <span>{{ cat['category'] }}</span>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          <div class="hidden lg:block flex-1 max-w-2xl">
+            <form action="/search" method="get" class="relative flex items-center w-full group">
+              <input type="text" name="q" placeholder="Search for tools, safety gear, brands..."
+                class="w-full bg-gray-50 border border-gray-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 rounded-xl pl-5 pr-12 py-2.5 text-sm transition-all" />
+              <button type="submit" class="absolute right-2 p-1.5 text-gray-400 hover:text-brand transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </a>
-              {% endfor %}
-            </div>
+              </button>
+            </form>
+          </div>
+
+          <div class="flex items-center gap-3 lg:gap-6 shrink-0">
+            <nav class="hidden lg:flex items-center gap-4 text-sm font-semibold">
+              {% if session.get('user_id') %}
+              <div class="relative group py-2">
+                <button class="flex items-center gap-2 text-gray-700 hover:text-brand transition">
+                  <div class="w-8 h-8 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold">
+                    {{ session.get('user_name', 'U')[0]|upper }}
+                  </div>
+                  <span>{{ session.get('user_name','Account') }}</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  class="absolute right-0 top-full mt-1 w-48 bg-white shadow-xl rounded-xl border border-gray-100 hidden group-hover:block animate-fade-in overflow-hidden z-50">
+                  <a href="/dashboard"
+                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition">My
+                    Dashboard</a>
+                  {% if session.get('is_admin') %}
+                  <a href="/admin"
+                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition">Admin
+                    Panel</a>
+                  {% endif %}
+                  <div class="border-t border-gray-100"></div>
+                  <a href="/logout" class="block px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">Logout</a>
+                </div>
+              </div>
+              {% else %}
+              <a href="/login" class="text-gray-600 hover:text-brand transition">Sign In</a>
+              <a href="/register"
+                class="bg-brand text-white px-5 py-2.5 rounded-xl hover:bg-brand-dark transition shadow-md shadow-brand/20">Create
+                Account</a>
+              {% endif %}
+            </nav>
+
+            <div class="hidden lg:block w-px h-8 bg-gray-200"></div>
+
+            <a href="/cart"
+              class="relative p-2 text-gray-700 hover:text-brand transition-colors group flex items-center gap-2">
+              <div class="relative">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7h12.8M7 13L5.4 5M17 21a1 1 0 100-2 1 1 0 000 2zm-10 0a1 1 0 100-2 1 1 0 000 2z" />
+                </svg>
+                <span id="cart-badge"
+                  class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-sm ring-2 ring-white">{{
+                  cart_count() }}</span>
+              </div>
+              <span class="hidden lg:block text-sm font-bold">Cart</span>
+            </a>
           </div>
         </div>
 
-        <!-- Primary Nav Links -->
-        <nav class="flex flex-1 items-center px-6 gap-8 text-sm font-semibold">
-          <a href="/"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">Home</a>
-          <a href="/flash-sale"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">🔥
-            Flash Sale</a>
-          <a href="/blogs"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">Blogs</a>
-          <a href="/brands"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">All
-            Brands</a>
-          <a href="/categories"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">Categories</a>
-          <a href="/contact"
-            class="hover:text-brand-light transition relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">Contact</a>
-        </nav>
-
-        <!-- Desktop Search -->
-        <div class="flex items-center px-6 bg-brand-dark/30">
-          <form action="/search" method="get" class="flex">
+        <div class="lg:hidden mt-4 mb-1">
+          <form action="/search" method="get" class="relative flex w-full">
             <input type="text" name="q" placeholder="Search products..."
-              class="w-64 border border-white/20 rounded-l-lg px-4 py-2 text-sm bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/20" />
-            <button type="submit" class="bg-brand-dark text-white px-4 py-2 rounded-r-lg hover:bg-brand transition">
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+            <button type="submit" class="absolute right-0 top-0 bottom-0 px-3 text-gray-400 hover:text-brand">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -214,54 +181,114 @@
       </div>
     </div>
 
-    <!-- Mobile Menu Drawer -->
+    <div class="hidden lg:block bg-navy-dark text-white shadow-md">
+      <div class="max-w-7xl mx-auto flex items-stretch">
+
+        <div class="relative group bg-brand px-6 py-3.5 flex items-center gap-3 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+          <span class="font-bold text-sm tracking-wide">ALL CATEGORIES</span>
+          <svg class="w-4 h-4 ml-2 transition-transform duration-200 group-hover:rotate-180" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+
+          <div
+            class="absolute left-0 top-full w-72 bg-white text-gray-800 shadow-2xl rounded-b-xl hidden group-hover:block animate-slide-down z-50 border border-gray-100 overflow-hidden">
+            <div class="max-h-[400px] overflow-y-auto no-scrollbar">
+              {% for cat in nav_categories %}
+              <a href="{{ url_for('category', category_name=cat['category']) }}"
+                class="flex items-center justify-between px-5 py-3.5 text-sm font-medium hover:bg-gray-50 hover:text-brand transition border-b border-gray-50 last:border-0 group/link">
+                <span>{{ cat['category'] }}</span>
+                <svg class="w-4 h-4 text-gray-300 group-hover/link:text-brand transition-colors" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex flex-1 items-center px-8 gap-8 text-sm font-semibold">
+          <a href="/"
+            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Home</a>
+          <a href="/flash-sale"
+            class="text-amber-400 hover:text-amber-300 transition relative flex items-center gap-1">⚡ Flash Sale</a>
+          <a href="/brands"
+            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Brands</a>
+          <a href="/categories"
+            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Categories</a>
+          <a href="/contact"
+            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Contact
+            Support</a>
+        </nav>
+
+        <div class="flex items-center px-6 text-sm font-bold bg-white/5">
+          <span class="text-brand-light mr-2">📞</span> +91 7767952949
+        </div>
+      </div>
+    </div>
+
     <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-black/50 z-50 hidden transition-all duration-300"
       style="backdrop-filter: blur(4px);">
-      <div class="bg-white w-80 h-full shadow-2xl overflow-y-auto animate-slide-down">
-        <div class="p-4 border-b flex justify-between items-center sticky top-0 bg-white">
-          <h3 class="font-bold text-lg">Menu</h3>
-          <button id="close-mobile-menu" class="p-2 rounded-full hover:bg-gray-100">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-white w-80 h-full shadow-2xl overflow-y-auto animate-slide-down flex flex-col">
+        <div class="p-4 border-b flex justify-between items-center bg-gray-50 sticky top-0">
+          <div class="flex items-center gap-2">
+            <div class="bg-brand text-white p-1.5 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg></div>
+            <span class="font-bold text-navy-dark text-lg">Menu</span>
+          </div>
+          <button id="close-mobile-menu" class="p-2 rounded-full hover:bg-gray-200 text-gray-500 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <nav class="p-4 space-y-1">
-          <a href="/" class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">🏠
+
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <a href="/"
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🏠
             Home</a>
           <a href="/flash-sale"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">⚡ Flash
-            Sale</a>
-          <a href="/blogs"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">📝 Blogs</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-amber-600 hover:bg-amber-50 font-bold rounded-xl transition">⚡
+            Flash Sale</a>
           <a href="/brands"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">🏷️ All
-            Brands</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🏷️
+            All Brands</a>
           <a href="/categories"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">📂 All
-            Categories</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">📂
+            All Categories</a>
           <a href="/contact"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">📞 Contact
-            Us</a>
-          <div class="border-t my-3"></div>
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">📞
+            Contact Us</a>
+
+          <div class="border-t border-gray-100 my-4"></div>
+
+          <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">My Account</p>
           {% if session.get('user_id') %}
           <a href="/dashboard"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">👤 {{
-            session.get('user_name','Account') }}</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">👤
+            Dashboard</a>
           {% if session.get('is_admin') %}
           <a href="/admin"
-            class="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">🛡️ Admin
-            panel</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🛡️
+            Admin Panel</a>
           {% endif %}
           <a href="/logout"
-            class="flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg transition">🚪 Logout</a>
+            class="flex items-center gap-3 px-4 py-3.5 text-red-600 hover:bg-red-50 font-medium rounded-xl transition mt-2">🚪
+            Logout</a>
           {% else %}
           <a href="/login"
-            class="flex items-center gap-3 px-3 py-3 text-brand font-semibold hover:bg-gray-100 rounded-lg transition">🔑
-            Login</a>
+            class="flex items-center justify-center w-full bg-gray-100 text-gray-800 font-bold py-3.5 rounded-xl hover:bg-gray-200 transition mt-2">Sign
+            In</a>
           <a href="/register"
-            class="flex items-center gap-3 px-3 py-3 text-brand font-semibold hover:bg-gray-100 rounded-lg transition">📝
-            Register</a>
+            class="flex items-center justify-center w-full bg-brand text-white font-bold py-3.5 rounded-xl hover:bg-brand-dark transition mt-3 shadow-md">Create
+            Account</a>
           {% endif %}
         </nav>
       </div>
@@ -322,9 +349,6 @@
         <h3 class="text-white font-bold text-base mb-4">Support</h3>
         <ul class="space-y-2 text-sm">
           <li><a href="/contact" class="hover:text-brand transition flex items-center gap-2">📞 Contact Us</a></li>
-          <li><a href="/returns" class="hover:text-brand transition flex items-center gap-2">↺ Returns Policy</a></li>
-          <li><a href="/shipping" class="hover:text-brand transition flex items-center gap-2">🚚 Shipping Info</a></li>
-          <li><a href="/faq" class="hover:text-brand transition flex items-center gap-2">❓ FAQ</a></li>
         </ul>
       </div>
       <div>
