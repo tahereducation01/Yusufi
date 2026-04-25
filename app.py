@@ -362,11 +362,10 @@ def categories_list():
     """)
     return render_template("categories.html", categories=categories)
 
-@app.route("/flash-sale")
-def flash_sale():
-    products = query_db("SELECT * FROM products WHERE price <= 120 ORDER BY price")
-    return render_template("flash_sale.html", products=products)
-
+@app.route("/products")
+def products_list():
+    products = query_db("SELECT * FROM products ORDER BY name")
+    return render_template("products.html", products=products)
 
 @app.route("/search")
 def search():
