@@ -3,103 +3,210 @@
 
 {% block content %}
 
-<section class="relative w-full rounded-3xl overflow-hidden mb-14 shadow-2xl">
-  <div class="absolute inset-0 bg-navy-dark">
-    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2000&auto=format&fit=crop" alt="Industrial Hardware" class="w-full h-full object-cover opacity-40 mix-blend-overlay" />
-    <div class="absolute inset-0 bg-gradient-to-r from-navy-dark via-navy-dark/80 to-transparent"></div>
-  </div>
+<style>
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: scroll 30s linear infinite;
+  }
+  .marquee-track-slow {
+    display: flex;
+    width: max-content;
+    animation: scroll 45s linear infinite;
+  }
+  .marquee-container:hover .marquee-track,
+  .marquee-container:hover .marquee-track-slow {
+    animation-play-state: paused;
+  }
+</style>
 
-  <div class="relative z-10 px-6 py-16 md:py-24 lg:py-32 max-w-4xl mx-auto md:mx-0 md:ml-12 text-center md:text-left flex flex-col items-center md:items-start">
-    <span class="inline-block py-1 px-3 rounded-full bg-brand/20 text-brand-light text-xs font-bold uppercase tracking-widest mb-4 border border-brand/30 backdrop-blur-sm">
-      Premium Industrial Supplies
-    </span>
-    <h1 class="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-tight mb-6">
-      Equip Your Workforce.<br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-brand">Secure Your Future.</span>
-    </h1>
-    <p class="text-gray-300 text-sm md:text-lg max-w-xl mb-8 leading-relaxed">
-      Wholesale industrial safety gear, certified hardware tools, and professional-grade PPE delivered directly to your site.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-      <a href="/categories" class="bg-brand text-white px-8 py-4 rounded-xl font-extrabold hover:bg-brand-dark hover:scale-105 transition-all shadow-lg shadow-brand/30 text-center">
-        Shop All Categories
-      </a>
-      <a href="/contact" class="bg-white/10 text-white border border-white/20 backdrop-blur-md px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all text-center">
-        Request Bulk Quote
-      </a>
+<style>
+  /* Seamless Crossfade & Floating Zoom Effect */
+  @keyframes float-zoom {
+    0% { opacity: 1; transform: scale(1); }
+    25% { opacity: 1; }
+    33.33% { opacity: 0; transform: scale(1.05); }
+    91.66% { opacity: 0; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .bg-slide-1 { 
+    background-image: url('../static/image1.png'); 
+    animation: float-zoom 18s infinite 0s; 
+  }
+  .bg-slide-2 { 
+    background-image: url('../static/image2.png'); 
+    animation: float-zoom 18s infinite 6s; 
+  }
+  .bg-slide-3 { 
+    background-image: url('../static/image3.png'); 
+    animation: float-zoom 18s infinite 12s; 
+  }
+  
+  /* Subtle float for the text container */
+  @keyframes float-text {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  .animate-float-text { 
+    animation: float-text 6s ease-in-out infinite; 
+  }
+</style>
+
+<section class="relative mb-8 md:mb-14 overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center justify-center bg-navy-dark">
+  
+  <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center bg-slide-1 opacity-0"></div>
+  <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center bg-slide-2 opacity-0"></div>
+  <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center bg-slide-3 opacity-0"></div>
+  
+  <div class="absolute inset-0 z-10 bg-gradient-to-r from-navy-dark/90 via-brand-dark/60 to-transparent"></div>
+  <div class="absolute inset-0 z-10 bg-black/30"></div>
+
+  <div class="relative z-20 px-4 sm:px-6 py-10 sm:py-16 md:py-24 w-full text-center text-white animate-float-text">
+    <div class="inline-block mb-3 sm:mb-4 px-4 sm:px-5 py-2 rounded-full bg-white/10 backdrop-blur-md text-xs sm:text-sm font-semibold tracking-wide border border-white/20 shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
+      Since 2013 | Trusted by 5000+ Industries
     </div>
+    
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-5 tracking-tight leading-tight drop-shadow-xl">
+      Yusufi <span class="text-yellow-400 drop-shadow-[0_2px_10px_rgba(250,204,21,0.3)]">Hardware</span>
+    </h1>
+    
+    <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 max-w-xl md:max-w-3xl mx-auto font-medium drop-shadow-md leading-relaxed">
+      India's Premier Destination for Industrial & Safety Equipment
+    </p>
   </div>
 </section>
 
-<!-- Categories Section -->
-<section class="mb-14">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
-      <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<section class="mb-8 md:mb-14">
+  <div class="flex items-center justify-between mb-4 md:mb-6 px-1 md:px-4">
+    <h2 class="text-xl md:text-3xl font-extrabold text-navy-dark flex items-center gap-2 md:gap-3">
+      <svg class="w-6 h-6 md:w-7 md:h-7 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
       </svg>
       Shop by Category
     </h2>
-    <a href="/categories" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg
-        class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <a href="/categories" class="text-brand hover:text-yellow-600 transition-colors flex items-center gap-1 font-semibold text-xs md:text-base">
+      View All
+      <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg></a>
+      </svg>
+    </a>
   </div>
 
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-    {% for row in categories[:10] %}
-    {% set cat = row['category'] %}
+  <div class="relative overflow-hidden">
+    <div class="absolute inset-y-0 left-0 w-12 md:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute inset-y-0 right-0 w-12 md:w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
 
-    <a href="/category/{{ cat | urlencode }}"
-      class="group flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-      <div
-        class="w-28 h-28 md:w-32 md:h-32 mb-4 rounded-2xl bg-white border border-gray-200 group-hover:border-brand shadow-sm group-hover:shadow-md transition-all flex items-center justify-center overflow-hidden p-3">
-        {% if row['image_url'] %}
-        <img src="{{ row['image_url'] }}" alt="{{ cat }}"
-          class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-          onerror="this.style.display='none'" />
-        {% else %}
-        <svg class="w-10 h-10 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-        {% endif %}
+    <div class="marquee-container flex overflow-hidden group py-4">
+      <div class="marquee-track-slow flex items-center gap-3 sm:gap-5 pr-3 sm:pr-5">
+        {% for row in categories %}
+        {% set cat = row['category'] %}
+        <a href="/category/{{ cat | urlencode }}"
+          class="group flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-2 p-3 md:p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:border-yellow-400 min-w-[120px] sm:min-w-[150px] md:min-w-[180px]">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 mb-3 flex items-center justify-center overflow-hidden">
+            {% if row['image_url'] %}
+            <img src="{{ row['image_url'] }}" alt="{{ cat }}"
+              class="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
+              onerror="this.style.display='none'" />
+            {% else %}
+            <svg class="w-10 h-10 md:w-14 md:h-14 text-yellow-500 group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            {% endif %}
+          </div>
+          <h3 class="text-xs sm:text-sm font-extrabold text-navy-dark group-hover:text-yellow-600 transition-colors line-clamp-2 px-1">{{ cat }}</h3>
+        </a>
+        {% endfor %}
       </div>
-      <h3 class="text-sm font-bold text-gray-800 group-hover:text-brand transition-colors">{{ cat }}</h3>
-      <p class="text-xs text-gray-400 mt-1">Shop Now →</p>
-    </a>
-    {% endfor %}
+
+      <div class="marquee-track-slow flex items-center gap-3 sm:gap-5 pr-3 sm:pr-5" aria-hidden="true">
+        {% for row in categories %}
+        {% set cat = row['category'] %}
+        <a href="/category/{{ cat | urlencode }}"
+          class="group flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-2 p-3 md:p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:border-yellow-400 min-w-[120px] sm:min-w-[150px] md:min-w-[180px]">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 mb-3 flex items-center justify-center overflow-hidden">
+            {% if row['image_url'] %}
+            <img src="{{ row['image_url'] }}" alt="{{ cat }}"
+              class="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
+              onerror="this.style.display='none'" />
+            {% else %}
+            <svg class="w-10 h-10 md:w-14 md:h-14 text-yellow-500 group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            {% endif %}
+          </div>
+          <h3 class="text-xs sm:text-sm font-extrabold text-navy-dark group-hover:text-yellow-600 transition-colors line-clamp-2 px-1">{{ cat }}</h3>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </section>
 
 {% if featured_products %}
-<section class="mb-14">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
-      <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+<section class="mb-8 md:mb-14">
+  <div class="flex items-center justify-between mb-4 md:mb-6 px-1 md:px-4">
+    <h2 class="text-xl md:text-3xl font-extrabold text-navy-dark flex items-center gap-2 md:gap-3">
+      <svg class="w-6 h-6 md:w-7 md:h-7 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
       </svg>
-      Trending Products
+      🔥 Trending This Week
     </h2>
+    <a href="/categories" class="text-brand hover:underline flex items-center gap-1 font-semibold text-xs md:text-base">
+      See All 
+      <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
   </div>
 
-  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
     {% for p in featured_products %}
-    <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden hover:border-brand/30">
-      <a href="/product/{{ p['id'] }}" class="block overflow-hidden h-48 bg-gray-50 relative p-4">
-        <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}" class="w-full h-full object-contain group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/600x400/1e3a5f/f59e0b?text=Yusufi+Hardware'" />
-      </a>
-      <div class="p-5 flex flex-col flex-1">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">{{ p['category'] }}</span>
-        <a href="/product/{{ p['id'] }}" class="text-navy-dark font-extrabold text-sm md:text-base hover:text-brand transition line-clamp-2 min-h-[2.5rem]">
+    <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden hover:border-yellow-400/50 hover:-translate-y-1">
+      <div class="relative overflow-hidden h-40 sm:h-48 md:h-52 bg-gray-50/50 p-3 md:p-4">
+        <a href="/product/{{ p['id'] }}" class="block h-full">
+          <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}"
+            class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition duration-500"
+            onerror="this.src='https://placehold.co/600x400/1e3a5f/f59e0b?text=Yusufi+Hardware'" />
+        </a>
+        <div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded-md shadow-sm">-15%</div>
+        <button class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-1.5 hover:bg-red-50 hover:text-red-500 transition shadow-sm">
+          <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-3 md:p-5 flex flex-col flex-1">
+        <span class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-wider mb-1 line-clamp-1">{{ p['category'] }}</span>
+        <a href="/product/{{ p['id'] }}"
+          class="text-navy-dark font-extrabold text-xs sm:text-sm md:text-base hover:text-brand transition line-clamp-2 min-h-[2rem] md:min-h-[2.8rem] leading-snug">
           {{ p['name'] }}
         </a>
-        <div class="mt-auto pt-4 flex items-center justify-between gap-2">
-          <span class="text-brand-dark font-black text-lg">₹{{ "%.2f"|format(p['price']) }}</span>
-          <form action="/cart/add/{{ p['id'] }}" method="post">
+        <div class="flex items-center gap-1 mt-1.5 md:mt-2">
+          <div class="flex text-yellow-400 text-xs md:text-sm">★★★★★</div>
+          <span class="text-[10px] md:text-xs text-gray-400">(128)</span>
+        </div>
+        <div class="mt-auto pt-3 md:pt-4 flex items-center justify-between gap-1">
+          <div class="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5">
+            <span class="text-brand-dark font-black text-sm sm:text-base md:text-lg">₹{{ "%.2f"|format(p['price']|float * 0.85) }}</span> 
+            <span class="text-[10px] md:text-xs text-gray-400 line-through">₹{{ "%.2f"|format(p['price']|float) }}</span>
+          </div>
+          <form action="/cart/add/{{ p['id'] }}" method="post" class="shrink-0">
             <input type="hidden" name="quantity" value="1" />
-            <button type="submit" class="bg-navy-dark hover:bg-brand text-white font-bold w-8 h-8 rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <button type="submit"
+              class="bg-navy-dark hover:bg-yellow-500 text-white font-bold w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl transition-all duration-200 flex items-center justify-center shadow-md hover:scale-105">
+              <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
             </button>
           </form>
         </div>
@@ -110,59 +217,95 @@
 </section>
 {% endif %}
 
-<!-- Brands Section -->
-{% if brands %}
-<section class="mb-14 py-8 bg-gray-50 rounded-2xl">
-  <div class="px-6">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl md:text-2xl font-extrabold text-navy-dark flex items-center gap-2">
-        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-        Top Brands
-      </h2>
-      <a href="/brands" class="text-sm text-brand hover:underline flex items-center gap-1">View All <svg class="w-4 h-4"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg></a>
+<section class="mb-8 md:mb-14 py-10 md:py-16 bg-gradient-to-b from-white via-gray-50/50 to-white border-y border-gray-100 relative overflow-hidden">
+  
+  <div class="text-center mb-8 md:mb-10 px-4 relative z-20">
+    <div class="inline-flex items-center justify-center gap-2 mb-2">
+      <span class="h-px w-8 bg-gradient-to-r from-transparent to-yellow-400"></span>
+      <h3 class="text-sm md:text-base font-black text-navy-dark tracking-[0.2em] uppercase">Trusted by Top Brands</h3>
+      <span class="h-px w-8 bg-gradient-to-l from-transparent to-yellow-400"></span>
     </div>
+    <p class="text-xs md:text-sm text-gray-500 font-medium">✨ 100+ BIS Certified Brands | Same Day Dispatch ✨</p>
+  </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      {% for row in brands[:12] %}
-      <a href="/brand/{{ row['brand'] | urlencode }}"
-        class="group block rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand hover:-translate-y-1">
-        <div
-          class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-700 text-lg font-bold mb-2 transition-colors group-hover:bg-brand group-hover:text-white">
-          {{ row['brand'][0] if row['brand'] else 'B' }}
-        </div>
-        <h3 class="text-sm font-semibold text-gray-800 group-hover:text-brand line-clamp-1">{{ row['brand'] }}</h3>
-      </a>
-      {% endfor %}
+  <div class="relative overflow-hidden max-w-[100vw]">
+    <div class="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
+    <div class="marquee-container flex overflow-hidden group py-4">
+      <div class="marquee-track flex items-center gap-4 md:gap-6 pr-4 md:pr-6">
+        {% for row in brands[:30] %}
+        <a href="/brand/{{ row['brand'] | urlencode }}"
+          class="group flex items-center gap-3.5 px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
+          
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center justify-center text-navy-dark text-sm md:text-base font-black group-hover:from-yellow-400 group-hover:to-yellow-500 group-hover:text-white group-hover:border-yellow-400 transition-all duration-300 shadow-inner">
+            {{ row['brand'][0] | upper if row['brand'] else 'B' }}
+          </div>
+          
+          <span class="text-sm md:text-base font-bold text-gray-700 group-hover:text-navy-dark whitespace-nowrap tracking-wide">{{ row['brand'] }}</span>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="marquee-track flex items-center gap-4 md:gap-6 pr-4 md:pr-6" aria-hidden="true">
+        {% for row in brands[:30] %}
+        <a href="/brand/{{ row['brand'] | urlencode }}"
+          class="group flex items-center gap-3.5 px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
+          
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center justify-center text-navy-dark text-sm md:text-base font-black group-hover:from-yellow-400 group-hover:to-yellow-500 group-hover:text-white group-hover:border-yellow-400 transition-all duration-300 shadow-inner">
+            {{ row['brand'][0] | upper if row['brand'] else 'B' }}
+          </div>
+          
+          <span class="text-sm md:text-base font-bold text-gray-700 group-hover:text-navy-dark whitespace-nowrap tracking-wide">{{ row['brand'] }}</span>
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </section>
-{% endif %}
 
-<!-- Featured Products Banner -->
-<section class="mb-14">
-  <div class="bg-gradient-to-r from-brand to-brand-dark rounded-2xl p-8 text-center text-white">
-    <h2 class="text-2xl md:text-3xl font-black mb-3">Need Expert Advice?</h2>
-    <p class="text-white/90 max-w-2xl mx-auto mb-6">Our safety experts are here to help you choose the right equipment
-      for your industry.</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/contact"
-        class="bg-white text-brand px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition shadow-md">
-        Contact Support
-      </a>
-      <a href="/flash-sale"
-        class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-md inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        Flash Sale
+<section class="mb-8 md:mb-14 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 px-1 md:px-4">
+  <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <div class="w-10 h-10 md:w-12 md:h-12 bg-yellow-50 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+      <svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <h3 class="text-base md:text-lg font-bold text-navy-dark mb-1.5 md:mb-2">100% Genuine</h3>
+    <p class="text-xs md:text-sm text-gray-600 leading-relaxed">All products are BIS/ISO certified with manufacturer warranty. No counterfeit items.</p>
+  </div>
+  <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <div class="w-10 h-10 md:w-12 md:h-12 bg-yellow-50 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+      <svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <h3 class="text-base md:text-lg font-bold text-navy-dark mb-1.5 md:mb-2">Fast Dispatch</h3>
+    <p class="text-xs md:text-sm text-gray-600 leading-relaxed">Orders before 2 PM dispatched same day. Free shipping on orders above ₹10000.</p>
+  </div>
+  <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <div class="w-10 h-10 md:w-12 md:h-12 bg-yellow-50 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+      <svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636L9.172 14.828M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <h3 class="text-base md:text-lg font-bold text-navy-dark mb-1.5 md:mb-2">Expert Support</h3>
+    <p class="text-xs md:text-sm text-gray-600 leading-relaxed">Get personalized advice from our safety engineers. Call or WhatsApp anytime.</p>
+  </div>
+</section>
+
+<section class="mb-4 md:mb-8 px-1 md:px-4">
+  <div class="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl md:rounded-3xl p-6 sm:p-8 md:p-10 text-center text-white shadow-xl">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-black mb-3 md:mb-4">Need Expert Advice?</h2>
+    <p class="text-white/95 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 md:mb-8">
+      Our team of industrial safety experts is ready to guide you. Whether you're setting up a new factory or upgrading equipment — we're here to help.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 md:gap-5 justify-center">
+      <a href="/contact" class="bg-white text-orange-600 px-6 py-3 md:px-8 md:py-3.5 rounded-xl font-bold hover:bg-gray-50 transition shadow-md flex items-center justify-center gap-2 text-sm md:text-base">
+        📞 Call Now: +91 7767952949
       </a>
     </div>
   </div>
 </section>
+
 {% endblock %}

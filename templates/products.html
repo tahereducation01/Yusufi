@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}All Products — Yusufi Hardware{% endblock %}
+
+{% block content %}
+<!-- Enhanced Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap" aria-label="Breadcrumb">
+  <a href="/" class="hover:text-brand transition flex items-center gap-1">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+    </svg>
+    Home
+  </a>
+  <span class="text-gray-400">/</span>
+  <span class="text-navy-dark font-semibold">All Products</span>
+</nav>
+
+<!-- Page Header -->
+<div class="mb-8 pb-4 border-b border-gray-200">
+  <div class="flex items-center gap-3 mb-2">
+    <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center">
+      <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl md:text-3xl font-extrabold text-navy-dark">All Products</h1>
+  </div>
+  <p class="text-gray-500 text-sm ml-15">Browse our complete collection of premium quality products from all categories.</p>
+</div>
+
+{% if products %}
+<!-- Product Count & Sort Bar -->
+<div class="flex justify-between items-center mb-5">
+  <p class="text-sm text-gray-500">{{ products|length }} product(s) found</p>
+  <select class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand">
+    <option>Sort by: Featured</option>
+    <option>Price: Low to High</option>
+    <option>Price: High to Low</option>
+    <option>Newest First</option>
+  </select>
+</div>
+
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+  {% for p in products %}
+  <div class="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden hover:border-brand/30">
+    <a href="/product/{{ p['id'] }}" class="block overflow-hidden h-48 bg-gray-100 relative">
+      <img src="{{ p['image_url'] }}" alt="{{ p['name'] }}"
+           class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+           onerror="this.src='https://placehold.co/600x400/1e3a5f/f59e0b?text=Yusufi+Hardware'" />
+
+      <!-- Stock Badge -->
+      {% if p['stock_quantity'] < 10 and p['stock_quantity'] > 0 %}
+      <span class="absolute top-2 left-2 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+        Low Stock
+      </span>
+      {% elif p['stock_quantity'] == 0 %}
+      <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+        Out of Stock
+      </span>
+      {% endif %}
+    </a>
+
+    <div class="p-4 flex flex-col flex-1">
+      <span class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide mb-1">{{ p['category'] }}</span>
+      <a href="/product/{{ p['id'] }}" class="text-navy-dark font-bold text-sm md:text-base hover:text-brand transition line-clamp-2 min-h-[2.5rem]">
+        {{ p['name'] }}
+      </a>
+      <p class="text-xs text-gray-500 mt-2 line-clamp-2">{{ p['description'] }}</p>
+
+      <div class="mt-auto pt-3 flex items-center justify-between gap-2">
+        <div>
+          <span class="text-brand-dark font-extrabold text-lg">Rs.{{ "%.2f"|format(p['price']) }}</span>
+        </div>
+        {% if p['stock_quantity'] > 0 %}
+        <form action="/cart/add/{{ p['id'] }}" method="post">
+          <input type="hidden" name="quantity" value="1" />
+          <button type="submit" class="bg-navy-dark hover:bg-brand hover:text-white text-white font-bold px-3 py-1.5 rounded-lg transition-all duration-200 text-xs shadow-sm flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add
+          </button>
+        </form>
+        {% else %}
+        <button disabled class="bg-gray-300 text-gray-500 font-bold px-3 py-1.5 rounded-lg text-xs cursor-not-allowed">
+          Out of Stock
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Pagination -->
+<div class="mt-10 flex justify-center">
+  <nav class="flex items-center gap-2">
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50 transition flex items-center gap-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Previous
+    </a>
+    <span class="px-4 py-2 text-sm text-gray-700 font-medium">Page 1 of 1</span>
+    <a href="#" class="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50 transition flex items-center gap-1">
+      Next
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </nav>
+</div>
+
+{% else %}
+<!-- No Products Message -->
+<div class="text-center py-16">
+  <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+    </svg>
+  </div>
+  <h3 class="text-xl font-semibold text-gray-900 mb-2">No Products Available</h3>
+  <p class="text-gray-500 mb-6">We're currently updating our inventory. Please check back soon!</p>
+  <a href="/" class="inline-flex items-center px-4 py-2 bg-brand text-white font-medium rounded-lg hover:bg-brand-dark transition">
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Back to Home
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

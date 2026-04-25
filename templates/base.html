@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>{% block title %}Yusufi Hardware - Premium Industrial & Hardware Supplies{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -28,6 +29,7 @@
           animation: {
             'fade-in': 'fadeIn 0.3s ease-in-out',
             'slide-down': 'slideDown 0.2s ease-out',
+            'scale-up': 'scaleUp 0.2s ease-out',
           },
           keyframes: {
             fadeIn: {
@@ -37,6 +39,10 @@
             slideDown: {
               '0%': { transform: 'translateY(-10px)', opacity: '0' },
               '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            scaleUp: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
             }
           }
         }
@@ -44,12 +50,12 @@
     }
   </script>
   <style>
-    /* Only essential custom styles remain - mostly for Alpine.js and fallbacks */
+    /* Essential custom styles for Alpine.js fallback and UX enhancements */
     [x-cloak] {
       display: none !important;
     }
 
-    /* Hide scrollbar for cleaner look on category dropdowns if needed */
+    /* Smooth category dropdown scrolling */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -59,12 +65,25 @@
       scrollbar-width: none;
     }
 
-    /* Line clamp utility for product titles */
+    /* Line clamp for product titles */
     .line-clamp-2 {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    /* Enhanced focus states for accessibility */
+    .focus-ring:focus {
+      outline: none;
+      ring: 2px solid #2563eb;
+      ring-offset: 2px;
+    }
+
+    /* Modern glassmorphism effect for dropdowns (subtle) */
+    .glass-dropdown {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(0px);
     }
   </style>
   {% block head %}{% endblock %}
@@ -72,137 +91,151 @@
 
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen antialiased">
 
-  <!-- ====== STICKY HEADER ====== -->
-  <header class="sticky top-0 z-50 bg-white flex flex-col shadow-sm">
+  <!-- ====== ENHANCED STICKY HEADER - MODERN & CLEAN ====== -->
+  <header class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-100 transition-all duration-200">
 
-    <div class="border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 py-3 lg:py-4">
-        <div class="flex items-center justify-between gap-4 lg:gap-8">
+    <!-- Top row: Logo, Mobile Menu, Cart & Auth (Search Removed) -->
+    <div class="w-full max-w-full mx-auto px-4 py-3 lg:py-4">
+      <div class="flex items-center justify-between gap-4">
 
-          <div class="flex items-center gap-3 shrink-0">
-            <button id="mobile-menu-button"
-              class="lg:hidden p-2 text-gray-600 hover:text-brand rounded-lg hover:bg-gray-100 transition-all focus:outline-none"
-              aria-label="Open mobile menu">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <a href="/" class="flex items-center gap-2 group">
-              <div
-                class="bg-brand/10 p-1.5 rounded-xl group-hover:bg-brand/20 transition-colors flex items-center justify-center">
-                <img src="/static/logo.png" alt="Yusufi Hardware Logo" class="h-8 w-8 md:h-10 md:w-10 object-contain"
-                  onerror="this.style.display='none'" />
-              </div>
-              <div class="hidden sm:block">
-                <span class="text-navy-dark font-black text-xl lg:text-2xl tracking-tight">Yusufi <span
-                    class="text-brand">Hardware</span></span>
-              </div>
-            </a>
-          </div>
+        <!-- Left side: Mobile menu button + LOGO (ALWAYS VISIBLE - company name appears on mobile) -->
+        <div class="flex items-center gap-3 shrink-0">
+          <!-- Mobile menu toggle (visible on tablet/mobile) -->
+          <button id="mobile-menu-button"
+            class="lg:hidden p-2.5 text-gray-600 hover:text-brand rounded-xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand/30"
+            aria-label="Open navigation menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
 
-          <div class="hidden lg:block flex-1 max-w-2xl">
-            <form action="/search" method="get" class="relative flex items-center w-full group">
-              <input type="text" name="q" placeholder="Search for tools, safety gear, brands..."
-                class="w-full bg-gray-50 border border-gray-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 rounded-xl pl-5 pr-12 py-2.5 text-sm transition-all" />
-              <button type="submit" class="absolute right-2 p-1.5 text-gray-400 hover:text-brand transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </form>
-          </div>
+          <!-- Brand Logo + Company Name (Always visible: desktop & mobile) -->
+          <a href="/" class="flex items-center gap-2.5 group transition-transform active:scale-98">
+            <div class="p-1.5 rounded-xl flex items-center justify-center">
 
-          <div class="flex items-center gap-3 lg:gap-6 shrink-0">
-            <nav class="hidden lg:flex items-center gap-4 text-sm font-semibold">
-              {% if session.get('user_id') %}
-              <div class="relative group py-2">
-                <button class="flex items-center gap-2 text-gray-700 hover:text-brand transition">
-                  <div class="w-8 h-8 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold">
-                    {{ session.get('user_name', 'U')[0]|upper }}
-                  </div>
-                  <span>{{ session.get('user_name','Account') }}</span>
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div
-                  class="absolute right-0 top-full mt-1 w-48 bg-white shadow-xl rounded-xl border border-gray-100 hidden group-hover:block animate-fade-in overflow-hidden z-50">
-                  <a href="/dashboard"
-                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition">My
-                    Dashboard</a>
-                  {% if session.get('is_admin') %}
-                  <a href="/admin"
-                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition">Admin
-                    Panel</a>
-                  {% endif %}
-                  <div class="border-t border-gray-100"></div>
-                  <a href="/logout" class="block px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">Logout</a>
-                </div>
-              </div>
-              {% else %}
-              <a href="/login" class="text-gray-600 hover:text-brand transition">Sign In</a>
-              <a href="/register"
-                class="bg-brand text-white px-5 py-2.5 rounded-xl hover:bg-brand-dark transition shadow-md shadow-brand/20">Create
-                Account</a>
-              {% endif %}
-            </nav>
+              <img src="/static/logo.png" alt="Yusufi Hardware" class="h-8 w-8 md:h-9 md:w-9 object-contain"
+                onerror="this.style.display='none'; this.nextElementSibling?.classList.remove('hidden')" />
 
-            <div class="hidden lg:block w-px h-8 bg-gray-200"></div>
-
-            <a href="/cart"
-              class="relative p-2 text-gray-700 hover:text-brand transition-colors group flex items-center gap-2">
-              <div class="relative">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7h12.8M7 13L5.4 5M17 21a1 1 0 100-2 1 1 0 000 2zm-10 0a1 1 0 100-2 1 1 0 000 2z" />
-                </svg>
-                <span id="cart-badge"
-                  class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-sm ring-2 ring-white">{{
-                  cart_count() }}</span>
-              </div>
-              <span class="hidden lg:block text-sm font-bold">Cart</span>
-            </a>
-          </div>
+              <span class="hidden text-brand text-xl font-black">YH</span>
+            </div>
+            <div class="flex items-baseline">
+              <span class="text-navy-dark font-black text-xl md:text-2xl tracking-tight whitespace-nowrap">Yusufi <span
+                  class="text-brand">Hardware</span></span>
+            </div>
+          </a>
         </div>
 
-        <div class="lg:hidden mt-4 mb-1">
-          <form action="/search" method="get" class="relative flex w-full">
-            <input type="text" name="q" placeholder="Search products..."
-              class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
-            <button type="submit" class="absolute right-0 top-0 bottom-0 px-3 text-gray-400 hover:text-brand">
+        <!-- Right side: Cart + User Account (no search input anywhere) -->
+        <div class="flex items-center gap-3 lg:gap-5 shrink-0">
+          <!-- Desktop User Navigation (without profile photo) - clean text based -->
+          <nav class="hidden lg:flex items-center gap-5 text-sm font-semibold">
+            {% if session.get('user_id') %}
+            <div class="relative group py-2">
+              <button
+                class="flex items-center gap-2 text-gray-700 hover:text-brand transition-colors duration-200 px-2 py-1 rounded-lg hover:bg-gray-50">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="font-medium">{{ session.get('user_name', 'Account') }}</span>
+                <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                class="absolute right-0 top-full mt-2 w-56 bg-white shadow-xl rounded-2xl border border-gray-100 hidden group-hover:block animate-scale-up overflow-hidden z-50">
+                <div class="py-2">
+                  <a href="/dashboard"
+                    class="flex items-center gap-3 px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition-colors">📊
+                    My Dashboard</a>
+                  {% if session.get('is_admin') %}
+                  <a href="/admin"
+                    class="flex items-center gap-3 px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand transition-colors">⚙️
+                    Admin Panel</a>
+                  {% endif %}
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <a href="/logout"
+                    class="flex items-center gap-3 px-5 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">🚪
+                    Logout</a>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <a href="/login"
+              class="text-gray-600 hover:text-brand transition px-3 py-2 rounded-lg hover:bg-gray-50">Sign In</a>
+            <a href="/register"
+              class="bg-brand text-white px-5 py-2.5 rounded-xl hover:bg-brand-dark transition shadow-md shadow-brand/20 hover:shadow-lg">Create
+              Account</a>
+            {% endif %}
+          </nav>
+
+          <!-- Vertical divider (desktop) -->
+          <div class="hidden lg:block w-px h-7 bg-gray-200"></div>
+
+          <!-- Cart Icon with badge (enhanced) -->
+          <a href="/cart"
+            class="relative p-2 text-gray-700 hover:text-brand transition-all duration-200 group flex items-center gap-2 rounded-xl hover:bg-gray-50">
+            <div class="relative">
+              <svg class="w-6 h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" stroke-width="1.8"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7h12.8M7 13L5.4 5M17 21a1 1 0 100-2 1 1 0 000 2zm-10 0a1 1 0 100-2 1 1 0 000 2z" />
+              </svg>
+              <span id="cart-badge"
+                class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[11px] font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white">{{
+                cart_count() }}</span>
+            </div>
+            <span class="hidden lg:block text-sm font-semibold">Cart</span>
+          </a>
+
+          <!-- Mobile auth shortcuts (condensed) - visible only on mobile -->
+          <div class="lg:hidden flex items-center gap-2">
+            {% if session.get('user_id') %}
+            <a href="/dashboard" class="p-2 text-gray-600 hover:text-brand rounded-full hover:bg-gray-100">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-            </button>
-          </form>
+            </a>
+            {% else %}
+            <a href="/login"
+              class="text-sm font-semibold text-brand px-3 py-1.5 rounded-lg border border-brand/30">Login</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="hidden lg:block bg-navy-dark text-white shadow-md">
-      <div class="max-w-7xl mx-auto flex items-stretch">
+    <!-- DESKTOP MEGA CATEGORIES NAVBAR (Enhanced with smooth hover & modern glow) -->
+    <div class="hidden lg:block bg-navy-dark text-white shadow-inner">
+      <div class="w-full max-w-full mx-auto flex items-stretch">
 
-        <div class="relative group bg-brand px-6 py-3.5 flex items-center gap-3 cursor-pointer">
+        <!-- "All Categories" Dropdown Trigger - premium design -->
+        <div
+          class="relative group bg-brand/90 hover:bg-brand px-7 py-4 flex items-center gap-3 cursor-pointer transition-all duration-200">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
           </svg>
           <span class="font-bold text-sm tracking-wide">ALL CATEGORIES</span>
-          <svg class="w-4 h-4 ml-2 transition-transform duration-200 group-hover:rotate-180" fill="none"
+          <svg class="w-4 h-4 ml-1 transition-transform duration-300 group-hover:rotate-180" fill="none"
             stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
-
+          <!-- Dropdown panel - enhanced grid style -->
           <div
-            class="absolute left-0 top-full w-72 bg-white text-gray-800 shadow-2xl rounded-b-xl hidden group-hover:block animate-slide-down z-50 border border-gray-100 overflow-hidden">
-            <div class="max-h-[400px] overflow-y-auto no-scrollbar">
+            class="absolute left-0 top-full w-80 bg-white text-gray-800 shadow-2xl rounded-b-2xl hidden group-hover:block animate-slide-down z-50 border border-gray-200 overflow-hidden">
+            <div class="max-h-[450px] overflow-y-auto no-scrollbar py-2">
               {% for cat in nav_categories %}
               <a href="{{ url_for('category', category_name=cat['category']) }}"
-                class="flex items-center justify-between px-5 py-3.5 text-sm font-medium hover:bg-gray-50 hover:text-brand transition border-b border-gray-50 last:border-0 group/link">
-                <span>{{ cat['category'] }}</span>
-                <svg class="w-4 h-4 text-gray-300 group-hover/link:text-brand transition-colors" fill="none"
-                  stroke="currentColor" viewBox="0 0 24 24">
+                class="flex items-center justify-between px-6 py-3.5 text-sm font-medium hover:bg-brand/5 hover:text-brand transition-colors border-b border-gray-50 last:border-0 group/link">
+                <span class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand/40 group-hover/link:bg-brand"></span>
+                  {{ cat['category'] }}
+                </span>
+                <svg
+                  class="w-4 h-4 text-gray-400 group-hover/link:text-brand transition-transform group-hover/link:translate-x-1"
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </a>
@@ -211,76 +244,78 @@
           </div>
         </div>
 
+        <!-- Primary Navigation Links (Enhanced) -->
         <nav class="flex flex-1 items-center px-8 gap-8 text-sm font-semibold">
           <a href="/"
-            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Home</a>
-          <a href="/flash-sale"
-            class="text-amber-400 hover:text-amber-300 transition relative flex items-center gap-1">⚡ Flash Sale</a>
+            class="text-white/90 hover:text-white transition relative py-4 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand after:transition-all hover:after:w-full">Home</a>
+          <a href="/products"
+            class="text-white/90 hover:text-white transition relative py-4 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand after:transition-all hover:after:w-full">Products</a>
           <a href="/brands"
-            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Brands</a>
+            class="text-white/90 hover:text-white transition relative py-4 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand after:transition-all hover:after:w-full">Brands</a>
           <a href="/categories"
-            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Categories</a>
+            class="text-white/90 hover:text-white transition relative py-4 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand after:transition-all hover:after:w-full">Categories</a>
           <a href="/contact"
-            class="text-white/90 hover:text-white transition relative after:absolute after:-bottom-3.5 after:left-0 after:w-0 after:h-1 after:bg-brand after:transition-all hover:after:w-full">Contact
-            Support</a>
+            class="text-white/90 hover:text-white transition relative py-4 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand after:transition-all hover:after:w-full">Support</a>
         </nav>
 
-        <div class="flex items-center px-6 text-sm font-bold bg-white/5">
-          <span class="text-brand-light mr-2">📞</span> +91 7767952949
+        <!-- Contact number badge / hotline -->
+        <div class="flex items-center px-6 text-sm font-bold bg-white/5 backdrop-blur-sm">
+          <span class="text-brand-light mr-2 text-lg">📞</span>
+          <span class="tracking-wide">+91 7767952949</span>
         </div>
       </div>
     </div>
 
-    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-black/50 z-50 hidden transition-all duration-300"
-      style="backdrop-filter: blur(4px);">
-      <div class="bg-white w-80 h-full shadow-2xl overflow-y-auto animate-slide-down flex flex-col">
-        <div class="p-4 border-b flex justify-between items-center bg-gray-50 sticky top-0">
-          <div class="flex items-center gap-2">
-            <div class="bg-brand text-white p-1.5 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor"
+    <!-- MOBILE SIDEBAR MENU (Enhanced with smooth overlay, no search) -->
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-black/60 z-50 hidden transition-all duration-300 ease-out"
+      style="backdrop-filter: blur(6px);">
+      <div
+        class="bg-white w-80 max-w-[85vw] h-full shadow-2xl overflow-y-auto animate-slide-down flex flex-col rounded-r-2xl">
+        <div class="p-5 border-b bg-white sticky top-0 flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <div class="bg-brand text-white p-2 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
               </svg></div>
-            <span class="font-bold text-navy-dark text-lg">Menu</span>
+            <span class="font-extrabold text-navy-dark text-xl">Menu</span>
           </div>
-          <button id="close-mobile-menu" class="p-2 rounded-full hover:bg-gray-200 text-gray-500 transition">
+          <button id="close-mobile-menu"
+            class="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-all duration-200">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-
-        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <nav class="flex-1 px-5 py-6 space-y-1.5">
           <a href="/"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🏠
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">🏠
             Home</a>
-          <a href="/flash-sale"
-            class="flex items-center gap-3 px-4 py-3.5 text-amber-600 hover:bg-amber-50 font-bold rounded-xl transition">⚡
-            Flash Sale</a>
+          <a href="/products"
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">📦
+            All Products</a>
           <a href="/brands"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🏷️
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">🏷️
             All Brands</a>
           <a href="/categories"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">📂
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">📂
             All Categories</a>
           <a href="/contact"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">📞
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">📞
             Contact Us</a>
 
-          <div class="border-t border-gray-100 my-4"></div>
-
-          <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">My Account</p>
+          <div class="border-t border-gray-100 my-5"></div>
+          <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Account</p>
           {% if session.get('user_id') %}
           <a href="/dashboard"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">👤
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">👤
             Dashboard</a>
           {% if session.get('is_admin') %}
           <a href="/admin"
-            class="flex items-center gap-3 px-4 py-3.5 text-gray-700 hover:bg-brand/5 hover:text-brand font-medium rounded-xl transition">🛡️
+            class="flex items-center gap-4 px-4 py-3.5 text-gray-800 hover:bg-brand/5 hover:text-brand font-semibold rounded-xl transition">🛡️
             Admin Panel</a>
           {% endif %}
           <a href="/logout"
-            class="flex items-center gap-3 px-4 py-3.5 text-red-600 hover:bg-red-50 font-medium rounded-xl transition mt-2">🚪
+            class="flex items-center gap-4 px-4 py-3.5 text-red-600 hover:bg-red-50 font-semibold rounded-xl transition mt-2">🚪
             Logout</a>
           {% else %}
           <a href="/login"
@@ -291,16 +326,20 @@
             Account</a>
           {% endif %}
         </nav>
+        <div class="p-5 border-t text-xs text-gray-500 bg-gray-50 flex justify-between">
+          <span>📞 +91 7767952949</span>
+          <span>✉️ support</span>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- ====== FLASH MESSAGES ====== -->
-  <div class="max-w-7xl mx-auto px-4 mt-4 w-full space-y-3 z-40">
+  <div class="w-full max-w-full mx-auto px-4 mt-4 space-y-3 z-40">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
     <div
-      class="flash-{{ category }} px-5 py-3 rounded-xl text-sm font-medium shadow-sm flex items-center justify-between gap-4 animate-fade-in"
+      class="flash-{{ category }} px-5 py-3 rounded-xl text-sm font-medium shadow-sm flex items-center justify-between gap-4 animate-fade-in border-l-4 border-brand"
       role="alert">
       <div class="flex items-center gap-2">
         {% if category == 'success' %}✅
@@ -321,55 +360,82 @@
   </div>
 
   <!-- ====== MAIN CONTENT ====== -->
-  <main class="flex-1 max-w-7xl mx-auto px-4 py-6 md:py-8 w-full">
+  <main class="flex-1 w-full max-w-full mx-auto px-4 py-6 md:py-8">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- ====== MODERN FOOTER ====== -->
-  <footer class="bg-navy-dark text-gray-300 mt-12">
-    <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
-      <div class="col-span-1 md:col-span-1">
-        <div class="flex items-center gap-2 mb-4">
-          <img src="/static/logo.png" alt="Yusufi Hardware Logo" class="h-8 w-8 object-contain" />
-          <span class="text-white font-bold text-xl">Yusufi Hardware</span>
+  <!-- ====== ENHANCED MODERN FOOTER (Rich, accessible, brand-driven) ====== -->
+  <footer class="bg-navy-dark text-gray-300 mt-auto border-t border-navy-light/20">
+    <div class="w-full max-w-full mx-auto px-4 py-12 lg:py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+        <!-- Brand Column with logo and description (always visible) -->
+        <div class="col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <img src="/static/logo.png" alt="Yusufi Hardware" class="h-9 w-9 object-contain bg-white/5 rounded-lg p-1"
+              onerror="this.style.display='none'" />
+            <span class="text-white font-black text-2xl tracking-tight">Yusufi <span
+                class="text-brand">Hardware</span></span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">Premium industrial safety equipment, professional
+            hardware tools, and certified supplies for demanding professionals. Trusted since 2013.</p>
         </div>
-        <p class="text-gray-400 text-sm leading-relaxed">Your trusted partner for industrial safety equipment, hardware
-          tools, and professional-grade supplies since 2005.</p>
+
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-white font-bold text-base mb-5 tracking-wide">Shop by Category</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="/" class="hover:text-brand transition flex items-center gap-2">→ Home & New Arrivals</a></li>
+            <li><a href="/brands" class="hover:text-brand transition flex items-center gap-2">→ Top Brands</a></li>
+            <li><a href="/categories" class="hover:text-brand transition flex items-center gap-2">→ All Categories</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Support & Resources -->
+        <div>
+          <h3 class="text-white font-bold text-base mb-5 tracking-wide">Support & Policies</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="/contact" class="hover:text-brand transition flex items-center gap-2">📬 Contact Support</a>
+            </li>
+            <li><a href="#" class="hover:text-brand transition flex items-center gap-2">📄 Shipping Info</a></li>
+            <li><a href="#" class="hover:text-brand transition flex items-center gap-2">🔄 Returns & Warranty</a></li>
+            <li><a href="#" class="hover:text-brand transition flex items-center gap-2">🔒 Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact & Hours -->
+        <div>
+          <h3 class="text-white font-bold text-base mb-5 tracking-wide">Get in Touch</h3>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li class="flex items-center gap-3"><span class="text-brand">📞</span> <span class="font-mono">+91
+                7767952949</span></li>
+            <li class="flex items-center gap-3"><span class="text-brand">✉️</span> yusufkanore@gmail.com</li>
+            <li class="flex items-center gap-3"><span class="text-brand">📍</span> Pune,Mahrashtra,India - Global
+              Shipping</li>
+            <li class="flex items-center gap-3"><span class="text-brand">🕒</span> Mon–Fri: 10AM – 6PM IST</li>
+          </ul>
+          <div class="mt-6 p-3 bg-white/5 rounded-xl inline-block">
+            <span class="text-xs font-semibold">📢 Bulk Orders? Call for best pricing</span>
+          </div>
+        </div>
       </div>
-      <div>
-        <h3 class="text-white font-bold text-base mb-4">Shop</h3>
-        <ul class="space-y-2 text-sm">
-          <li><a href="/" class="hover:text-brand transition flex items-center gap-2">→ Home</a></li>
-          <li><a href="/flash-sale" class="hover:text-brand transition flex items-center gap-2">→ Flash Sale</a></li>
-          <li><a href="/brands" class="hover:text-brand transition flex items-center gap-2">→ Brands</a></li>
-          <li><a href="/categories" class="hover:text-brand transition flex items-center gap-2">→ Categories</a></li>
-        </ul>
+
+      <div
+        class="border-t border-navy-light/20 mt-12 pt-7 flex flex-col md:flex-row justify-between items-center gap-3 text-center md:text-left">
+        <p class="text-gray-500 text-xs">
+          &copy; <span id="year"></span> Yusufi Hardware. All rights reserved. | Certified industrial supplier
+        </p>
+        <p class="text-gray-500 text-xs flex gap-4">✅ EN/ANSI Standards ✅ GST Registered</p>
       </div>
-      <div>
-        <h3 class="text-white font-bold text-base mb-4">Support</h3>
-        <ul class="space-y-2 text-sm">
-          <li><a href="/contact" class="hover:text-brand transition flex items-center gap-2">📞 Contact Us</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-white font-bold text-base mb-4">Get in Touch</h3>
-        <ul class="space-y-2 text-sm text-gray-400">
-          <li class="flex items-center gap-2">📞 +91 7767952949</li>
-          <li class="flex items-center gap-2">✉️ yusufkanore@gmail.com</li>
-          <li class="flex items-center gap-2">🕒 Mon–Fri 08:00–17:00 EST</li>
-        </ul>
-      </div>
-    </div>
-    <div class="border-t border-navy text-center text-xs py-4 text-gray-500">
-      &copy; 2025 Yusufi Hardware. All rights reserved. | All products meet applicable EN/ANSI standards.
     </div>
   </footer>
 
-  <!-- ====== WHATSAPP FLOATING BUTTON ====== -->
-  <a href="https://wa.me/7767952949?text=Hello%20Yusufi%20Hardware" target="_blank" rel="noopener noreferrer"
-    class="fixed bottom-6 right-6 z-40 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200">
-
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 32 32" fill="currentColor">
+  <!-- ====== WHATSAPP FLOATING BUTTON (Enhanced) ====== -->
+  <a href="https://wa.me/7767952949?text=Hello%20Yusufi%20Hardware%20-%20I%20need%20assistance" target="_blank"
+    rel="noopener noreferrer"
+    class="fixed bottom-6 right-6 z-40 bg-green-600 hover:bg-green-700 text-white rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-200 group flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 group-hover:scale-110 transition-transform"
+      viewBox="0 0 32 32" fill="currentColor">
       <path
         d="M19.11 17.39c-.29-.14-1.71-.84-1.98-.93-.27-.1-.46-.14-.65.14-.19.29-.75.93-.92 1.12-.17.19-.33.22-.62.08-.29-.14-1.21-.45-2.3-1.42-.85-.76-1.43-1.7-1.6-1.98-.17-.29-.02-.44.13-.58.13-.13.29-.33.44-.5.15-.17.2-.29.29-.48.1-.19.05-.35-.02-.5-.08-.14-.65-1.57-.9-2.15-.24-.58-.48-.5-.65-.51h-.55c-.19 0-.5.07-.76.35-.26.29-1 1-1 2.43 0 1.42 1.03 2.8 1.17 3 .14.19 2.02 3.08 4.89 4.32.68.29 1.21.46 1.62.59.68.21 1.3.18 1.79.11.55-.08 1.71-.7 1.95-1.38.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.33z" />
       <path
@@ -378,7 +444,7 @@
   </a>
 
   <script>
-    // Mobile menu toggle with improved UX
+    // Robust mobile menu toggle with improved accessibility
     const mobileMenuBtn = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const closeMenuBtn = document.getElementById('close-mobile-menu');
@@ -393,25 +459,101 @@
       }
     }
 
-    if (mobileMenuBtn) {
-      mobileMenuBtn.addEventListener('click', () => toggleMenu(true));
-    }
-    if (closeMenuBtn) {
-      closeMenuBtn.addEventListener('click', () => toggleMenu(false));
-    }
-    // Close on outside click
-    mobileMenu?.addEventListener('click', (e) => {
-      if (e.target === mobileMenu) toggleMenu(false);
-    });
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => toggleMenu(true));
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', () => toggleMenu(false));
+    mobileMenu?.addEventListener('click', (e) => { if (e.target === mobileMenu) toggleMenu(false); });
 
-    // Flash message auto-dismiss after 5 seconds
-    document.querySelectorAll('.flash-success, .flash-danger, .flash-warning, .flash-info').forEach(msg => {
+    // Auto-dismiss flash messages after 5 seconds with fade
+    document.querySelectorAll('[class^="flash-"]').forEach(msg => {
       setTimeout(() => {
+        msg.style.transition = 'opacity 0.3s ease';
         msg.style.opacity = '0';
         setTimeout(() => msg.remove(), 300);
       }, 5000);
     });
   </script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  
+  <!-- AJAX Cart Functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle all cart add forms
+      document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (form.action && form.action.includes('/cart/add/')) {
+          e.preventDefault();
+          
+          const formData = new FormData(form);
+          const button = form.querySelector('button[type="submit"]');
+          const originalText = button.innerHTML;
+          
+          // Disable button and show loading
+          button.disabled = true;
+          button.innerHTML = '<svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+          
+          fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Update cart count
+              const cartBadge = document.getElementById('cart-badge');
+              if (cartBadge) {
+                cartBadge.textContent = data.cart_count;
+              }
+              
+              // Show success message
+              Swal.fire({
+                icon: 'success',
+                title: 'Added to Cart!',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+              });
+            } else {
+              // Show error message
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message,
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Something went wrong. Please try again.',
+              timer: 3000,
+              showConfirmButton: false,
+              toast: true,
+              position: 'top-end'
+            });
+          })
+          .finally(() => {
+            // Re-enable button and restore text
+            button.disabled = false;
+            button.innerHTML = originalText;
+          });
+        }
+      });
+    });
+  </script>
+  
   <script src="/static/js/main.js"></script>
   {% block scripts %}{% endblock %}
 </body>
