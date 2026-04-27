@@ -236,11 +236,7 @@
       <div class="marquee-track flex items-center gap-4 md:gap-6 pr-4 md:pr-6">
         {% for row in brands[:30] %}
         <a href="/brand/{{ row['brand'] | urlencode }}"
-          class="group flex items-center gap-3.5 px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
-          
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center justify-center text-navy-dark text-sm md:text-base font-black group-hover:from-yellow-400 group-hover:to-yellow-500 group-hover:text-white group-hover:border-yellow-400 transition-all duration-300 shadow-inner">
-            {{ row['brand'][0] | upper if row['brand'] else 'B' }}
-          </div>
+          class="group flex items-center justify-center px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
           
           <span class="text-sm md:text-base font-bold text-gray-700 group-hover:text-navy-dark whitespace-nowrap tracking-wide">{{ row['brand'] }}</span>
         </a>
@@ -250,11 +246,7 @@
       <div class="marquee-track flex items-center gap-4 md:gap-6 pr-4 md:pr-6" aria-hidden="true">
         {% for row in brands[:30] %}
         <a href="/brand/{{ row['brand'] | urlencode }}"
-          class="group flex items-center gap-3.5 px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
-          
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center justify-center text-navy-dark text-sm md:text-base font-black group-hover:from-yellow-400 group-hover:to-yellow-500 group-hover:text-white group-hover:border-yellow-400 transition-all duration-300 shadow-inner">
-            {{ row['brand'][0] | upper if row['brand'] else 'B' }}
-          </div>
+          class="group flex items-center justify-center px-6 py-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-yellow-500/10 hover:border-yellow-400 hover:-translate-y-1.5 transition-all duration-300 min-w-[160px] md:min-w-[200px]">
           
           <span class="text-sm md:text-base font-bold text-gray-700 group-hover:text-navy-dark whitespace-nowrap tracking-wide">{{ row['brand'] }}</span>
         </a>
