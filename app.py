@@ -17,15 +17,6 @@ DATABASE = os.path.join(BASE_DIR, "safetyshop.db")
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-
-# ---------------------------------------------------------------------------
-# Database helpers
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# Database helpers
-# ---------------------------------------------------------------------------
-
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
@@ -453,6 +444,14 @@ def add_to_cart(product_id):
         }
     session["cart"] = cart
     session.modified = True
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({
+            "success": True, 
+            "message": f'"{product["name"]}" added to cart.',
+            "cart_count": cart_count()
+        })
+
     flash(f'"{product["name"]}" added to cart.', "success")
     return redirect(request.referrer or url_for("index"))
 
